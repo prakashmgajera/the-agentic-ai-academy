@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Agentic AI Academy — Free AI Learning, from Beginner to Advanced</title>
+  <meta name="description" content="A structured path from zero to production-grade AI engineering — agents, RAG, LLMs, MCP, and everything in between. No paywalls. Ever." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    :root {
+      --syne: 'Syne', sans-serif;
+      --dm: 'DM Sans', sans-serif;
+      --black: #111;
+      --muted: #666;
+      --bg: #fff;
+      --bg2: #f7f7f5;
+      --bg3: #f2f1ee;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.2);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --black: #f0ede8;
+        --muted: #999;
+        --bg: #141413;
+        --bg2: #1c1c1a;
+        --bg3: #181817;
+        --border: rgba(255,255,255,0.1);
+        --border-strong: rgba(255,255,255,0.2);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--dm);
+      color: var(--black);
+      background: var(--bg);
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      font-family: var(--syne); font-weight: 800; font-size: 16px;
+      letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;
+      color: var(--black); text-decoration: none;
+    }
+    .logo-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #1D9E75; display: inline-block; flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a {
+      font-size: 13px; font-weight: 400; color: var(--muted);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta {
+      font-family: var(--syne); font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: 6px;
+      background: var(--black); color: var(--bg) !important;
+      text-decoration: none;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 5rem 2rem 4rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      align-items: center;
+      border-bottom: 0.5px solid var(--border);
+      max-width: 1100px; margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #0F6E56;
+      background: #E1F5EE; padding: 5px 12px;
+      border-radius: 100px; margin-bottom: 1.5rem;
+    }
+    .hero-badge span { width: 5px; height: 5px; border-radius: 50%; background: #1D9E75; }
+    .hero-h1 {
+      font-family: var(--syne); font-weight: 800; font-size: 48px;
+      line-height: 1.05; letter-spacing: -2px; margin-bottom: 1.5rem;
+    }
+    .hero-h1 em { font-style: normal; color: #1D9E75; }
+    .hero-sub {
+      font-size: 16px; line-height: 1.7; color: var(--muted);
+      max-width: 420px; margin-bottom: 2.5rem; font-weight: 300;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .btn-primary {
+      font-family: var(--syne); font-weight: 700; font-size: 14px;
+      padding: 13px 24px; border-radius: 8px;
+      background: var(--black); color: var(--bg);
+      border: none; cursor: pointer; text-decoration: none;
+      transition: opacity 0.15s; display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-ghost {
+      font-family: var(--syne); font-weight: 700; font-size: 14px;
+      padding: 12px 24px; border-radius: 8px;
+      background: transparent; color: var(--black);
+      border: 1px solid var(--border-strong);
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: var(--bg2); }
+    .hero-stats { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+    .h-stat { font-size: 13px; color: var(--muted); }
+    .h-stat strong { font-family: var(--syne); font-weight: 700; color: var(--black); font-size: 15px; }
+
+    /* Hero visual */
+    .hero-visual { position: relative; height: 340px; }
+    .phase-card {
+      position: absolute; border-radius: 12px;
+      border: 0.5px solid var(--border);
+      background: var(--bg); padding: 1rem 1.25rem;
+      width: 210px; transition: transform 0.3s ease;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .phase-card:hover { transform: translateY(-4px); }
+    .phase-card .phase-num {
+      font-family: var(--syne); font-weight: 800; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .phase-card .phase-title { font-weight: 500; font-size: 14px; margin-bottom: 4px; color: var(--black); }
+    .phase-card .phase-dur { font-size: 12px; color: var(--muted); }
+    .p1 { top: 0; left: 0; border-left: 3px solid #1D9E75; }
+    .p1 .phase-num { color: #1D9E75; }
+    .p2 { top: 90px; left: 60px; border-left: 3px solid #BA7517; }
+    .p2 .phase-num { color: #BA7517; }
+    .p3 { top: 180px; left: 120px; border-left: 3px solid #7F77DD; }
+    .p3 .phase-num { color: #534AB7; }
+    .tool-chips {
+      position: absolute; right: 0; top: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .chip {
+      font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 100px;
+      border: 0.5px solid var(--border); background: var(--bg2);
+      color: var(--muted); white-space: nowrap;
+    }
+    .free-pill {
+      position: absolute; bottom: 0; right: 0;
+      font-family: var(--syne); font-weight: 800; font-size: 24px;
+      color: #1D9E75; letter-spacing: -1px;
+      border: 2px solid #1D9E75; padding: 8px 20px;
+      border-radius: 100px; background: #E1F5EE;
+    }
+
+    /* ── STATS ── */
+    .stats-wrap { border-bottom: 0.5px solid var(--border); }
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      max-width: 1100px; margin: 0 auto;
+    }
+    .stat {
+      padding: 2rem; text-align: center;
+      border-right: 0.5px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--syne); font-weight: 800; font-size: 32px;
+      letter-spacing: -1px; margin-bottom: 4px; color: var(--black);
+    }
+    .stat-label { font-size: 13px; color: var(--muted); font-weight: 300; }
+
+    /* ── SECTIONS ── */
+    .section-wrap { border-bottom: 0.5px solid var(--border); }
+    .section-inner { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: var(--syne); font-weight: 800; font-size: 34px;
+      letter-spacing: -1px; margin-bottom: 3rem; color: var(--black);
+    }
+
+    /* ── PHASES ── */
+    .phases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .phase-block {
+      border: 0.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.75rem; background: var(--bg);
+      transition: border-color 0.2s;
+    }
+    .phase-block:hover { border-color: var(--border-strong); }
+    .phase-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+      display: inline-block; margin-bottom: 1rem;
+    }
+    .tag-green { background: #E1F5EE; color: #0F6E56; }
+    .tag-amber { background: #FAEEDA; color: #854F0B; }
+    .tag-purple { background: #EEEDFE; color: #3C3489; }
+    .phase-block h3 {
+      font-family: var(--syne); font-weight: 700; font-size: 20px;
+      letter-spacing: -0.5px; margin-bottom: 8px; color: var(--black);
+    }
+    .phase-block .duration { font-size: 12px; color: var(--muted); margin-bottom: 1.25rem; }
+    .module-list { list-style: none; margin-bottom: 1.5rem; }
+    .module-list li {
+      font-size: 13px; color: var(--muted); padding: 5px 0;
+      border-bottom: 0.5px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .module-list li:last-child { border-bottom: none; }
+    .mod-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .d-green { background: #1D9E75; }
+    .d-amber { background: #EF9F27; }
+    .d-purple { background: #7F77DD; }
+    .phase-cap {
+      font-size: 12px; font-weight: 500; padding: 8px 12px;
+      border-radius: 6px; background: var(--bg2);
+      color: var(--muted); display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ── BUILDS ── */
+    .builds-wrap { background: var(--bg3); border-bottom: 0.5px solid var(--border); }
+    .builds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
+    .build-card {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .build-card:hover { border-color: var(--border-strong); }
+    .build-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 1rem;
+    }
+    .build-card h4 {
+      font-family: var(--syne); font-weight: 700; font-size: 15px;
+      margin-bottom: 6px; letter-spacing: -0.3px; color: var(--black);
+    }
+    .build-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── TOOLKIT ── */
+    .toolkit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
+    .tool-cat { padding: 1.25rem; border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+    .tool-cat-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px;
+    }
+    .tool-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tool-item {
+      font-size: 12px; padding: 3px 10px; border-radius: 100px;
+      border: 0.5px solid var(--border); background: var(--bg2);
+      color: var(--muted);
+    }
+
+    /* ── COMMUNITY ── */
+    .community-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .community-inner h2 {
+      font-family: var(--syne); font-weight: 800; font-size: 34px;
+      letter-spacing: -1px; margin-bottom: 1rem; color: var(--black);
+    }
+    .community-inner p {
+      font-size: 15px; color: var(--muted); line-height: 1.7;
+      font-weight: 300; margin-bottom: 2rem;
+    }
+    .badges-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .badge-card {
+      border: 0.5px solid var(--border); border-radius: 10px;
+      padding: 1rem; text-align: center; background: var(--bg);
+    }
+    .badge-icon { font-size: 22px; margin-bottom: 6px; }
+    .badge-title { font-size: 11px; font-weight: 500; color: var(--black); }
+    .badge-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 5rem 2rem; text-align: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .cta-section h2 {
+      font-family: var(--syne); font-weight: 800; font-size: 44px;
+      letter-spacing: -1.5px; margin-bottom: 1rem;
+      max-width: 580px; margin-left: auto; margin-right: auto;
+      color: var(--black);
+    }
+    .cta-section p { font-size: 15px; color: var(--muted); margin-bottom: 2.5rem; font-weight: 300; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .cta-highlight { color: #1D9E75; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem;
+      border-top: 0.5px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--muted);
+      max-width: 1100px; margin: 0 auto;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--syne); font-weight: 800; font-size: 14px;
+      letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px;
+      color: var(--black); text-decoration: none;
+    }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--black); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding: 3rem 1.25rem 2rem; }
+      .hero-visual { display: none; }
+      .hero-h1 { font-size: 36px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-right: none; border-bottom: 0.5px solid var(--border); }
+      .stat:nth-child(odd) { border-right: 0.5px solid var(--border); }
+      .phases-grid, .builds-grid, .toolkit-grid { grid-template-columns: 1fr; }
+      .community-inner { grid-template-columns: 1fr; }
+      .section-inner { padding: 3rem 1.25rem; }
+      nav { padding: 1rem 1.25rem; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      footer { flex-direction: column; text-align: center; padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#"><span class="logo-dot"></span> The Agentic AI Academy</a>
+    <div class="nav-links">
+      <a href="#curriculum">Curriculum</a>
+      <a href="#projects">Projects</a>
+      <a href="#community">Community</a>
+      <a href="#toolkit">Toolkit</a>
+      <a class="nav-cta" href="#start">Start Free →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="border-bottom: 0.5px solid var(--border);">
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-badge"><span></span> Free · Open · Community-Driven</div>
+        <h1 class="hero-h1">Learn to build<br><em>real AI agents</em><br>from scratch.</h1>
+        <p class="hero-sub">The Agentic AI Academy is a structured path from zero to production-grade AI engineering — agents, RAG, LLMs, MCP, and everything in between. No paywalls. Ever.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#start">Start Learning →</a>
+          <a class="btn-ghost" href="https://github.com" target="_blank" rel="noopener">
+            <i class="ti ti-brand-github" aria-hidden="true"></i> View on GitHub
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="h-stat"><strong>26</strong> modules</div>
+          <div class="h-stat"><strong>3</strong> phases</div>
+          <div class="h-stat"><strong>100%</strong> free</div>
+          <div class="h-stat"><strong>MIT</strong> licensed</div>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="phase-card p1">
+          <div class="phase-num">Phase 1 · Beginner</div>
+          <div class="phase-title">AI & LLM Foundations</div>
+          <div class="phase-dur">8–10 weeks · 8 modules</div>
+        </div>
+        <div class="phase-card p2">
+          <div class="phase-num">Phase 2 · Intermediate</div>
+          <div class="phase-title">Agents & RAG Engineering</div>
+          <div class="phase-dur">10–12 weeks · 9 modules</div>
+        </div>
+        <div class="phase-card p3">
+          <div class="phase-num">Phase 3 · Advanced</div>
+          <div class="phase-title">Production AI Systems</div>
+          <div class="phase-dur">12–16 weeks · 9 modules</div>
+        </div>
+        <div class="tool-chips">
+          <div class="chip">LangGraph</div>
+          <div class="chip">CrewAI</div>
+          <div class="chip">LangChain</div>
+          <div class="chip">Pinecone</div>
+          <div class="chip">Claude Code</div>
+          <div class="chip">Google ADK</div>
+        </div>
+        <div class="free-pill">100% Free</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-wrap">
+    <div class="stats">
+      <div class="stat"><div class="stat-num">26</div><div class="stat-label">Course modules</div></div>
+      <div class="stat"><div class="stat-num">15+</div><div class="stat-label">RAG patterns covered</div></div>
+      <div class="stat"><div class="stat-num">5k</div><div class="stat-label">Learners by month 18</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Cost to join</div></div>
+    </div>
+  </div>
+
+  <!-- CURRICULUM -->
+  <div class="section-wrap" id="curriculum">
+    <div class="section-inner">
+      <div class="section-label">Curriculum</div>
+      <div class="section-title">Three phases, one destination.</div>
+      <div class="phases-grid">
+
+        <div class="phase-block">
+          <span class="phase-tag tag-green">Phase 1 · Beginner</span>
+          <h3>AI & LLM Foundations</h3>
+          <div class="duration"><i class="ti ti-clock" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>8–10 weeks · ~6 hrs/week</div>
+          <ul class="module-list">
+            <li><span class="mod-dot d-green"></span>What is AI? History & modern stack</li>
+            <li><span class="mod-dot d-green"></span>Understanding LLMs & transformers</li>
+            <li><span class="mod-dot d-green"></span>Prompt engineering mastery</li>
+            <li><span class="mod-dot d-green"></span>AI APIs & developer setup</li>
+            <li><span class="mod-dot d-green"></span>Intro to AI agents</li>
+            <li><span class="mod-dot d-green"></span>Embeddings & vector similarity</li>
+            <li><span class="mod-dot d-green"></span>Your first RAG system</li>
+          </ul>
+          <div class="phase-cap"><i class="ti ti-trophy" aria-hidden="true" style="font-size:14px"></i>Capstone: Working AI assistant</div>
+        </div>
+
+        <div class="phase-block">
+          <span class="phase-tag tag-amber">Phase 2 · Intermediate</span>
+          <h3>Agents & RAG Engineering</h3>
+          <div class="duration"><i class="ti ti-clock" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>10–12 weeks · ~10 hrs/week</div>
+          <ul class="module-list">
+            <li><span class="mod-dot d-amber"></span>LangChain deep dive</li>
+            <li><span class="mod-dot d-amber"></span>Advanced RAG — all 15 patterns</li>
+            <li><span class="mod-dot d-amber"></span>LangGraph, CrewAI & AutoGen</li>
+            <li><span class="mod-dot d-amber"></span>Tool use & function calling</li>
+            <li><span class="mod-dot d-amber"></span>Google ADK & AWS Bedrock</li>
+            <li><span class="mod-dot d-amber"></span>Claude Code & AI coding tools</li>
+            <li><span class="mod-dot d-amber"></span>MCP: Model Context Protocol</li>
+          </ul>
+          <div class="phase-cap"><i class="ti ti-trophy" aria-hidden="true" style="font-size:14px"></i>Capstone: 4-agent research engine</div>
+        </div>
+
+        <div class="phase-block">
+          <span class="phase-tag tag-purple">Phase 3 · Advanced</span>
+          <h3>Production AI Systems</h3>
+          <div class="duration"><i class="ti ti-clock" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>12–16 weeks · ~14 hrs/week</div>
+          <ul class="module-list">
+            <li><span class="mod-dot d-purple"></span>Agentic software engineering</li>
+            <li><span class="mod-dot d-purple"></span>Multi-agent architecture</li>
+            <li><span class="mod-dot d-purple"></span>GraphRAG & Self-RAG</li>
+            <li><span class="mod-dot d-purple"></span>Fine-tuning with LoRA/QLoRA</li>
+            <li><span class="mod-dot d-purple"></span>AI security & prompt injection</li>
+            <li><span class="mod-dot d-purple"></span>Cloud deployment & CI/CD</li>
+            <li><span class="mod-dot d-purple"></span>AI Engineer Toolkit 2026</li>
+          </ul>
+          <div class="phase-cap"><i class="ti ti-trophy" aria-hidden="true" style="font-size:14px"></i>Capstone: Production open-source AI system</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="builds-wrap" id="projects">
+    <div class="section-inner">
+      <div class="section-label">Projects</div>
+      <div class="section-title">Build things that actually work.</div>
+      <div class="builds-grid">
+        <div class="build-card">
+          <div class="build-icon" style="background:#E1F5EE"><i class="ti ti-robot" style="color:#1D9E75;font-size:20px" aria-hidden="true"></i></div>
+          <h4>AI Research Engine</h4>
+          <p>A 4-agent system with Planner, Researcher, Writer & Reviewer powered by CrewAI and hybrid RAG search.</p>
+        </div>
+        <div class="build-card">
+          <div class="build-icon" style="background:#EEEDFE"><i class="ti ti-database" style="color:#7F77DD;font-size:20px" aria-hidden="true"></i></div>
+          <h4>Advanced RAG Pipeline</h4>
+          <p>Production RAG with metadata filtering, hybrid search, contextual compression and RAGAS evaluation.</p>
+        </div>
+        <div class="build-card">
+          <div class="build-icon" style="background:#FAEEDA"><i class="ti ti-terminal-2" style="color:#EF9F27;font-size:20px" aria-hidden="true"></i></div>
+          <h4>MCP Server</h4>
+          <p>A published MCP server connecting your agent to external APIs — GitHub, Slack, or your own service.</p>
+        </div>
+        <div class="build-card">
+          <div class="build-icon" style="background:#FAECE7"><i class="ti ti-cloud" style="color:#D85A30;font-size:20px" aria-hidden="true"></i></div>
+          <h4>Deployed AI App</h4>
+          <p>A production-grade AI system on cloud with CI/CD, monitoring via Langfuse, and cost tracking.</p>
+        </div>
+        <div class="build-card">
+          <div class="build-icon" style="background:#E1F5EE"><i class="ti ti-code" style="color:#1D9E75;font-size:20px" aria-hidden="true"></i></div>
+          <h4>Agentic REST API</h4>
+          <p>Use a coding agent (Claude Code or Cursor) to autonomously build, test, and document a REST API from a spec.</p>
+        </div>
+        <div class="build-card">
+          <div class="build-icon" style="background:#EEEDFE"><i class="ti ti-adjustments-horizontal" style="color:#7F77DD;font-size:20px" aria-hidden="true"></i></div>
+          <h4>Fine-tuned LLM</h4>
+          <p>A domain-specialized model using LoRA/QLoRA with evaluation benchmarks and hosted on HuggingFace.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLKIT -->
+  <div class="section-wrap" id="toolkit">
+    <div class="section-inner">
+      <div class="section-label">AI Engineer Toolkit 2026</div>
+      <div class="section-title">Master the full stack.</div>
+      <div class="toolkit-grid">
+        <div class="tool-cat">
+          <div class="tool-cat-label">Frameworks</div>
+          <div class="tool-items">
+            <span class="tool-item">LangChain</span><span class="tool-item">LlamaIndex</span><span class="tool-item">LangGraph</span><span class="tool-item">CrewAI</span><span class="tool-item">AutoGen</span>
+          </div>
+        </div>
+        <div class="tool-cat">
+          <div class="tool-cat-label">Vector Databases</div>
+          <div class="tool-items">
+            <span class="tool-item">Pinecone</span><span class="tool-item">Chroma</span><span class="tool-item">Qdrant</span><span class="tool-item">Weaviate</span>
+          </div>
+        </div>
+        <div class="tool-cat">
+          <div class="tool-cat-label">Model Hosting</div>
+          <div class="tool-items">
+            <span class="tool-item">HuggingFace</span><span class="tool-item">Ollama</span><span class="tool-item">vLLM</span><span class="tool-item">Together AI</span>
+          </div>
+        </div>
+        <div class="tool-cat">
+          <div class="tool-cat-label">Routing & Inference</div>
+          <div class="tool-items">
+            <span class="tool-item">LiteLLM</span><span class="tool-item">OpenRouter</span><span class="tool-item">Groq</span>
+          </div>
+        </div>
+        <div class="tool-cat">
+          <div class="tool-cat-label">Observability</div>
+          <div class="tool-items">
+            <span class="tool-item">Langfuse</span><span class="tool-item">LangSmith</span><span class="tool-item">RAGAS</span><span class="tool-item">Arize</span>
+          </div>
+        </div>
+        <div class="tool-cat">
+          <div class="tool-cat-label">AI Coding Tools</div>
+          <div class="tool-items">
+            <span class="tool-item">Claude Code</span><span class="tool-item">Cursor</span><span class="tool-item">Windsurf</span><span class="tool-item">GitHub Copilot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="section-wrap" id="community">
+    <div class="section-inner">
+      <div class="community-inner">
+        <div>
+          <div class="section-label">Community</div>
+          <h2>Learn together.<br>Build together.</h2>
+          <p>The Agentic AI Academy is more than a course — it's an open community of builders. Share agents, publish RAG cookbooks, join hackathons, earn badges, and mentor the next generation of AI engineers.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn-primary" href="#start">Join the Community →</a>
+            <a class="btn-ghost" href="https://discord.com" target="_blank" rel="noopener">
+              <i class="ti ti-brand-discord" aria-hidden="true"></i> Discord
+            </a>
+          </div>
+        </div>
+        <div class="badges-grid">
+          <div class="badge-card"><div class="badge-icon">🟢</div><div class="badge-title">AI Foundations</div><div class="badge-sub">Phase 1 complete</div></div>
+          <div class="badge-card"><div class="badge-icon">🟡</div><div class="badge-title">Agent Developer</div><div class="badge-sub">Phase 2 complete</div></div>
+          <div class="badge-card"><div class="badge-icon">🔴</div><div class="badge-title">AI Engineer</div><div class="badge-sub">Phase 3 complete</div></div>
+          <div class="badge-card"><div class="badge-icon">🧩</div><div class="badge-title">RAG Expert</div><div class="badge-sub">Specialist track</div></div>
+          <div class="badge-card"><div class="badge-icon">🤖</div><div class="badge-title">Agent Architect</div><div class="badge-sub">Specialist track</div></div>
+          <div class="badge-card"><div class="badge-icon">🌍</div><div class="badge-title">Community Champion</div><div class="badge-sub">3+ contributions</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div style="border-bottom: 0.5px solid var(--border);" id="start">
+    <div class="cta-section">
+      <h2>The future of AI is <span class="cta-highlight">agentic.</span><br>Start building today.</h2>
+      <p>Free forever. No credit card. No paywalls. Just knowledge.</p>
+      <div class="cta-actions">
+        <a class="btn-primary" href="#curriculum">Begin Phase 1 — Free →</a>
+        <a class="btn-ghost" href="#">
+          <i class="ti ti-brand-github" aria-hidden="true"></i> Star on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a class="footer-logo" href="#"><span class="logo-dot"></span> The Agentic AI Academy</a>
+    <div style="font-size:12px;color:var(--muted)">Free Learning · Open Knowledge · Community Driven</div>
+    <div class="footer-links">
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://discord.com" target="_blank" rel="noopener">Discord</a>
+      <a href="#">MIT License</a>
+    </div>
+  </footer>
+
+</body>
+</html>
