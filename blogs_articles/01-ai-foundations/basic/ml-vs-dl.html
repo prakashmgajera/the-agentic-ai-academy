@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning vs Deep Learning — The Agentic AI Academy</title>
+<style>
+  :root { --bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .compare-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.9rem;}
+  .compare-table th{background:var(--surface);color:var(--primary-light);padding:0.75rem 1rem;text-align:left;border:1px solid var(--border);}
+  .compare-table td{padding:0.75rem 1rem;border:1px solid var(--border);color:#cbd5e1;vertical-align:top;}
+  .compare-table tr:nth-child(even) td{background:rgba(26,29,46,0.5);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../../index.html">🏠 Home</a> › <a href="#">AI Foundations</a> › ML vs Deep Learning
+</nav>
+
+<div class="hero">
+  <span class="badge">🟢 Basic</span>
+  <h1>Machine Learning vs Deep Learning:<br>What's the Difference?</h1>
+  <div class="meta">
+    <span>📚 AI Foundations</span>
+    <span>⏱ 10 min read</span>
+    <span>🗓 May 2026</span>
+  </div>
+</div>
+
+<div class="content">
+  <p>If you've started learning about AI, you've probably heard the terms "Machine Learning" and "Deep Learning" used interchangeably — but they're not the same thing. Understanding the difference is fundamental to knowing which approach to use and why modern AI is so powerful.</p>
+
+  <h2>The Big Picture</h2>
+  <p>Think of it as nested circles:</p>
+  <ul>
+    <li><strong>Artificial Intelligence</strong> — the outermost ring; any machine that mimics human intelligence</li>
+    <li><strong>Machine Learning</strong> — a subset of AI; systems that learn from data</li>
+    <li><strong>Deep Learning</strong> — a subset of ML; uses multi-layered neural networks</li>
+    <li><strong>Generative AI / LLMs</strong> — today's frontier; deep learning models that generate content</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Analogy:</strong> Machine Learning is like hiring someone who learns from experience. Deep Learning is hiring a team with a specialized brain structure that can handle extremely complex patterns — but needs far more training data and computing power.
+  </div>
+
+  <h2>What is Machine Learning?</h2>
+  <p>Machine Learning (ML) is the practice of building algorithms that improve automatically through experience. Instead of programming explicit rules ("if email contains 'buy now' → spam"), you feed the algorithm examples and let it discover the rules itself.</p>
+
+  <h3>Classic ML Algorithms</h3>
+  <div class="card-grid">
+    <div class="card"><h4>Linear Regression</h4><p>Predicts continuous values. Used for house prices, sales forecasting.</p></div>
+    <div class="card"><h4>Decision Trees</h4><p>Learns a tree of if/else decisions. Highly interpretable.</p></div>
+    <div class="card"><h4>Random Forest</h4><p>Ensemble of decision trees. Great for tabular data.</p></div>
+    <div class="card"><h4>SVM</h4><p>Finds optimal boundary between classes. Works well with small datasets.</p></div>
+    <div class="card"><h4>k-NN</h4><p>Classifies based on nearest neighbors in feature space.</p></div>
+    <div class="card"><h4>Gradient Boosting</h4><p>XGBoost, LightGBM — still win many Kaggle competitions.</p></div>
+  </div>
+
+  <h3>How ML Works (The Training Loop)</h3>
+  <ol>
+    <li>Collect and clean data</li>
+    <li>Extract features (relevant measurements from raw data)</li>
+    <li>Choose and initialize a model</li>
+    <li>Train: feed examples, compute error, adjust parameters</li>
+    <li>Evaluate on unseen test data</li>
+    <li>Deploy and monitor</li>
+  </ol>
+
+  <p>The critical step is <strong>feature engineering</strong> — manually selecting and transforming the input variables your model will use. This requires deep domain expertise.</p>
+
+<pre><code># Classic ML example with scikit-learn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+print(f"Accuracy: {accuracy_score(y_test, predictions):.2%}")</code></pre>
+
+  <h2>What is Deep Learning?</h2>
+  <p>Deep Learning uses <strong>artificial neural networks</strong> with many layers (hence "deep") to learn representations of data. Crucially, deep learning can <em>automatically learn features</em> from raw data — you don't need to hand-engineer them.</p>
+
+  <h3>Neural Network Basics</h3>
+  <p>A neural network is inspired loosely by the human brain. It consists of:</p>
+  <ul>
+    <li><strong>Input layer</strong> — receives raw data (pixels, words, numbers)</li>
+    <li><strong>Hidden layers</strong> — transform data through weighted connections and activation functions</li>
+    <li><strong>Output layer</strong> — produces the prediction or generation</li>
+  </ul>
+  <p>During training, the network adjusts its millions (or billions) of weights using a process called <strong>backpropagation</strong> — calculating how wrong each weight was and adjusting it slightly.</p>
+
+<pre><code># Deep Learning example with PyTorch
+import torch
+import torch.nn as nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(784, 256),
+            nn.ReLU(),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Linear(128, 10)   # 10 output classes
+        )
+
+    def forward(self, x):
+        return self.layers(x)
+
+model = SimpleNet()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+criterion = nn.CrossEntropyLoss()</code></pre>
+
+  <h3>Key Deep Learning Architectures</h3>
+  <div class="card-grid">
+    <div class="card"><h4>CNN</h4><p>Convolutional Neural Networks — excel at images and spatial data.</p></div>
+    <div class="card"><h4>RNN / LSTM</h4><p>Recurrent networks — handle sequences. Largely replaced by Transformers.</p></div>
+    <div class="card"><h4>Transformer</h4><p>The architecture behind GPT, BERT, Claude, and virtually all modern LLMs.</p></div>
+    <div class="card"><h4>Diffusion Model</h4><p>Powers image generation tools like DALL-E, Stable Diffusion, Midjourney.</p></div>
+  </div>
+
+  <h2>Head-to-Head Comparison</h2>
+  <table class="compare-table">
+    <tr><th>Dimension</th><th>Machine Learning</th><th>Deep Learning</th></tr>
+    <tr><td>Data needed</td><td>Works with small-to-medium datasets (thousands)</td><td>Needs large datasets (millions+)</td></tr>
+    <tr><td>Feature engineering</td><td>Manual — domain expert required</td><td>Automatic — learns from raw data</td></tr>
+    <tr><td>Compute needed</td><td>CPU is usually sufficient</td><td>GPU/TPU almost always required</td></tr>
+    <tr><td>Training time</td><td>Minutes to hours</td><td>Hours to weeks</td></tr>
+    <tr><td>Interpretability</td><td>Often explainable (decision trees, coefficients)</td><td>Mostly "black box"</td></tr>
+    <tr><td>Performance on images/text</td><td>Limited</td><td>State of the art</td></tr>
+    <tr><td>Performance on tabular data</td><td>Often competitive or better</td><td>Improving but ML often wins</td></tr>
+    <tr><td>Best for</td><td>Structured/tabular data, smaller datasets</td><td>Images, text, audio, video, code</td></tr>
+  </table>
+
+  <h2>When to Use Which?</h2>
+  <h3>Use classic Machine Learning when:</h3>
+  <ul>
+    <li>You have structured/tabular data (spreadsheets, databases)</li>
+    <li>Your dataset has thousands, not millions, of examples</li>
+    <li>Interpretability matters (regulated industries like finance/healthcare)</li>
+    <li>You have limited compute resources</li>
+    <li>You need fast training and iteration cycles</li>
+  </ul>
+
+  <h3>Use Deep Learning when:</h3>
+  <ul>
+    <li>Working with unstructured data: images, text, audio, video</li>
+    <li>You have massive datasets</li>
+    <li>You need state-of-the-art performance on complex tasks</li>
+    <li>You're building language models, image generators, or voice systems</li>
+  </ul>
+
+  <h2>The Transformer Revolution</h2>
+  <p>In 2017, Google published "Attention Is All You Need" — introducing the <strong>Transformer architecture</strong>. This changed everything. Transformers can process entire sequences in parallel (unlike RNNs) and scale remarkably well with more data and compute.</p>
+  <p>Every major LLM today — GPT-4, Claude, Gemini, LLaMA — is built on the Transformer architecture. Deep Learning went from a specialist tool to the foundation of the AI era we're living in.</p>
+
+  <div class="callout">
+    <strong>The key insight:</strong> Deep Learning didn't make Machine Learning obsolete — it extended what's possible. Production AI systems often combine both: a deep learning model for complex perception tasks, feeding into classical ML for structured decision-making.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>ML learns patterns from data; Deep Learning does so using multi-layered neural networks</li>
+    <li>Deep Learning eliminates manual feature engineering — a major advantage for complex data</li>
+    <li>Classic ML still excels on tabular data with limited samples</li>
+    <li>The Transformer (2017) is the architecture powering today's AI renaissance</li>
+    <li>Choose your approach based on data type, dataset size, compute, and interpretability needs</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="what-is-ai.html">← What is AI?</a>
+    <a class="nav-link" href="../intermediate/how-llms-work.html">Next: How LLMs Work →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Foundations · Basic Level</footer>
+</body>
+</html>

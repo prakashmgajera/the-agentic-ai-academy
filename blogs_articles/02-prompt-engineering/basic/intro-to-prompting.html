@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Prompt Engineering — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  .prompt-box{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin:1rem 0 1.5rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875rem;color:#e2e8f0;white-space:pre-wrap;}
+  .prompt-box .label{color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;display:block;}
+  .bad{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.05);}
+  .good{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.05);}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../../index.html">🏠 Home</a> › <a href="#">Prompt Engineering</a> › Intro to Prompting
+</nav>
+
+<div class="hero">
+  <span class="badge">🟢 Basic</span>
+  <h1>Introduction to Prompt Engineering:<br>Talk to AI Like a Pro</h1>
+  <div class="meta">
+    <span>✍️ Prompt Engineering</span>
+    <span>⏱ 10 min read</span>
+    <span>🗓 May 2026</span>
+  </div>
+</div>
+
+<div class="content">
+  <p>Prompt engineering is the practice of designing inputs to AI systems to get optimal outputs. It's the most immediately practical skill in the AI toolkit — and it doesn't require any coding. A well-crafted prompt can be the difference between a mediocre response and an expert-level answer.</p>
+
+  <h2>Why Prompting Matters</h2>
+  <p>LLMs are general-purpose systems. The same model can write code, poetry, legal summaries, or customer service emails. The prompt is how you direct that general capability toward your specific need. Poor prompts yield poor results — not because the model lacks knowledge, but because it lacks context and direction.</p>
+
+  <div class="callout">
+    <strong>The fundamental principle:</strong> LLMs are next-token predictors. The better you describe the context, role, constraints, and desired output, the more accurately the model can predict what text belongs next.
+  </div>
+
+  <h2>The Anatomy of a Good Prompt</h2>
+  <p>A complete prompt typically contains some or all of these elements:</p>
+  <div class="card-grid">
+    <div class="card"><h4>Role/Persona</h4><p>Who should the model act as? ("You are an expert Python developer...")</p></div>
+    <div class="card"><h4>Context</h4><p>Background information the model needs to understand the task</p></div>
+    <div class="card"><h4>Task</h4><p>A clear, specific instruction of what to do</p></div>
+    <div class="card"><h4>Format</h4><p>How the output should look (bullet points, JSON, markdown, etc.)</p></div>
+    <div class="card"><h4>Constraints</h4><p>What to avoid, tone requirements, length limits</p></div>
+    <div class="card"><h4>Examples</h4><p>Sample inputs/outputs that show the desired behavior</p></div>
+  </div>
+
+  <h2>The #1 Rule: Be Specific</h2>
+  <p>Vague prompts produce vague results. The more precisely you describe what you want, the better the output.</p>
+
+  <div class="prompt-box bad">
+<span class="label">❌ Weak Prompt</span>Write something about productivity.</div>
+
+  <div class="prompt-box good">
+<span class="label">✅ Strong Prompt</span>Write a 300-word LinkedIn post for a software engineering audience about the "2-minute rule" for productivity. Use an engaging hook in the first line, include one concrete example from software development, and end with a call to action. Tone: professional but conversational.</div>
+
+  <h2>Use Role Assignment</h2>
+  <p>Assigning a persona dramatically shifts the model's tone, vocabulary, and expertise level.</p>
+
+  <div class="prompt-box good">
+<span class="label">✅ With Role</span>You are a senior data scientist with 10 years of experience in healthcare AI. Explain precision-recall tradeoff to a product manager with no technical background. Use an analogy from everyday life.</div>
+
+  <h2>Provide Context</h2>
+  <p>LLMs have no memory of your previous conversations or your situation. Every prompt is a fresh start. Give the model the context it needs:</p>
+
+  <div class="prompt-box good">
+<span class="label">✅ With Context</span>I'm building a SaaS application for restaurant inventory management. My tech stack is Next.js (frontend) and FastAPI (backend). I have a database schema with tables: inventory_items, suppliers, orders.
+
+Write a FastAPI endpoint that accepts a POST request to add a new inventory item, validates the input, and returns the created item with a 201 status code.</div>
+
+  <h2>Specify Output Format</h2>
+  <p>Telling the model exactly how to structure its response saves you editing time and enables downstream processing.</p>
+
+  <div class="prompt-box good">
+<span class="label">✅ Structured Output</span>Analyze the following customer review and extract:
+1. Overall sentiment (positive/neutral/negative)
+2. Top 3 specific complaints (as bullet points)
+3. A suggested response from the company (2–3 sentences)
+
+Return your answer in this exact JSON format:
+{
+  "sentiment": "",
+  "complaints": [],
+  "suggested_response": ""
+}
+
+Review: [paste review here]</div>
+
+  <h2>Use Delimiters to Separate Content</h2>
+  <p>When your prompt mixes instructions with content (like user-provided text), use clear delimiters to avoid confusion:</p>
+
+  <div class="prompt-box good">
+<span class="label">✅ With Delimiters</span>Summarize the following article in exactly 3 bullet points.
+
+&lt;article&gt;
+[article content here]
+&lt;/article&gt;
+
+Each bullet should be one sentence. Focus on the key business implications.</div>
+
+  <h2>Zero-Shot vs Few-Shot Prompting</h2>
+  <h3>Zero-Shot: Just give the instruction</h3>
+  <div class="prompt-box good">
+<span class="label">Zero-Shot</span>Classify this email as urgent, normal, or low-priority.
+
+Email: "Hi, can you update the copyright year in the footer?"</div>
+
+  <h3>Few-Shot: Provide examples first</h3>
+  <div class="prompt-box good">
+<span class="label">Few-Shot</span>Classify emails as urgent, normal, or low-priority.
+
+Email: "Server is down! Users can't log in!" → urgent
+Email: "Can we schedule a meeting next week?" → normal
+Email: "Please update my billing address." → normal
+Email: "CRITICAL: Payment processing failure - $50k/hr revenue impact" → urgent
+
+Email: "Hi, can you update the copyright year in the footer?" →</div>
+
+  <p>Few-shot examples help when the task is ambiguous or has a non-obvious interpretation. They're especially useful for classification, formatting, and style-transfer tasks.</p>
+
+  <h2>Iteration: Your Most Powerful Technique</h2>
+  <p>Prompt engineering is empirical. Rarely does the first prompt produce the ideal output. Treat it like debugging:</p>
+  <ol>
+    <li>Write a first draft prompt</li>
+    <li>Evaluate the output — what's good? what's missing?</li>
+    <li>Identify the specific gap (tone? format? depth? accuracy?)</li>
+    <li>Add a constraint or example that addresses that gap</li>
+    <li>Test again — repeat until satisfied</li>
+  </ol>
+
+  <h2>Common Mistakes to Avoid</h2>
+  <ul>
+    <li><strong>Asking multiple questions in one prompt</strong> — split complex requests into sequential turns</li>
+    <li><strong>Being too polite</strong> — you don't need "please" and "thank you"; directness is more effective</li>
+    <li><strong>Negative-only constraints</strong> — "don't be too long" is less effective than "respond in 100 words"</li>
+    <li><strong>Assuming context</strong> — provide all relevant background; the model starts fresh every time</li>
+    <li><strong>Skipping format specification</strong> — if format matters, always specify it explicitly</li>
+  </ul>
+
+  <h2>Quick Reference: Prompt Templates</h2>
+  <div class="prompt-box">
+<span class="label">Template: Explain Concept</span>You are [role]. Explain [concept] to [audience] in [length]. Use [analogy/example]. Avoid [jargon/technical terms].</div>
+
+  <div class="prompt-box">
+<span class="label">Template: Code Generation</span>You are a senior [language] developer. Write a function that [task]. Requirements: [list]. Return only the code with inline comments. No explanation needed.</div>
+
+  <div class="prompt-box">
+<span class="label">Template: Content Creation</span>Write a [format] about [topic] for [audience]. Tone: [tone]. Length: [length]. Include: [specific elements]. End with: [CTA/conclusion type].</div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>Prompts = directions for the model; specificity is the #1 factor in output quality</li>
+    <li>Structure prompts with: role, context, task, format, constraints</li>
+    <li>Few-shot examples dramatically improve accuracy on classification and formatting tasks</li>
+    <li>Always specify output format when the structure matters</li>
+    <li>Prompt engineering is iterative — expect to refine</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../01-ai-foundations/intermediate/how-llms-work.html">← How LLMs Work</a>
+    <a class="nav-link" href="../intermediate/advanced-prompting-techniques.html">Next: Advanced Techniques →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · Prompt Engineering · Basic Level</footer>
+</body>
+</html>

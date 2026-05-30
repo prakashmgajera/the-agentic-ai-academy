@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Agent Systems — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">AI Agents</a> › Multi-Agent Systems</nav>
+<div class="hero">
+  <span class="badge">🟡 Intermediate</span>
+  <h1>Building Multi-Agent Systems:<br>CrewAI, AutoGen & LangGraph</h1>
+  <div class="meta"><span>🤖 AI Agents</span><span>⏱ 17 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>When a single agent isn't enough — for parallelization, specialization, or quality checking — you need multi-agent systems. This guide covers three leading frameworks: CrewAI, AutoGen, and LangGraph, with practical examples for each.</p>
+
+  <h2>Why Multi-Agent?</h2>
+  <p>Single agents struggle with tasks that are too complex for one context window, require parallel processing, or benefit from specialization and peer review. Multi-agent systems address these by:</p>
+  <ul>
+    <li><strong>Parallelization:</strong> Run research, coding, and analysis simultaneously</li>
+    <li><strong>Specialization:</strong> Each agent has a specific role and focused system prompt</li>
+    <li><strong>Error checking:</strong> Critic agents review other agents' work</li>
+    <li><strong>Scale:</strong> Decompose massive tasks across many agents</li>
+  </ul>
+
+  <h2>Framework 1: CrewAI</h2>
+  <p>CrewAI models AI collaboration as a "crew" of agents with defined roles, backstories, and goals — similar to a business team.</p>
+
+<pre><code">pip install crewai crewai-tools</code></pre>
+
+<pre><code">from crewai import Agent, Task, Crew, Process
+from crewai_tools import SerperDevTool, WebsiteSearchTool
+
+search_tool = SerperDevTool()
+
+# Define agents with roles and backstories
+researcher = Agent(
+    role="Senior Research Analyst",
+    goal="Uncover cutting-edge developments in {topic}",
+    backstory="""You are an expert research analyst with a talent for finding
+    authoritative, up-to-date information. You synthesize complex information
+    into clear, actionable insights.""",
+    tools=[search_tool],
+    verbose=True,
+    max_iter=3
+)
+
+writer = Agent(
+    role="Tech Content Strategist",
+    goal="Craft compelling content about {topic}",
+    backstory="""You are a skilled writer who translates technical research into
+    engaging narratives. You excel at making complex topics accessible.""",
+    verbose=True
+)
+
+editor = Agent(
+    role="Senior Editor",
+    goal="Ensure content is accurate, clear, and publication-ready",
+    backstory="""A meticulous editor who catches errors, improves clarity,
+    and ensures consistent tone and style.""",
+    verbose=True
+)
+
+# Define tasks with expected outputs
+research_task = Task(
+    description="Research the latest developments in {topic}. Identify the top 5 trends.",
+    expected_output="A structured report with 5 trends, each with evidence and sources.",
+    agent=researcher
+)
+
+write_task = Task(
+    description="Write a comprehensive blog post based on the research report.",
+    expected_output="A 1000-word blog post with clear sections and engaging writing.",
+    agent=writer,
+    context=[research_task]  # Depends on research
+)
+
+edit_task = Task(
+    description="Review and refine the blog post. Fix errors, improve clarity.",
+    expected_output="A polished, publication-ready blog post.",
+    agent=editor,
+    context=[write_task]
+)
+
+# Assemble and run the crew
+crew = Crew(
+    agents=[researcher, writer, editor],
+    tasks=[research_task, write_task, edit_task],
+    process=Process.sequential,  # or Process.hierarchical
+    verbose=True
+)
+
+result = crew.kickoff(inputs={"topic": "AI agents in 2026"})
+print(result)</code></pre>
+
+  <h2>Framework 2: AutoGen</h2>
+  <p>AutoGen (Microsoft) focuses on conversational multi-agent patterns where agents talk to each other to solve problems collaboratively.</p>
+
+<pre><code">pip install pyautogen</code></pre>
+
+<pre><code">import autogen
+
+config_list = [{"model": "claude-opus-4-6", "api_key": "your_key",
+                "api_type": "anthropic"}]
+
+llm_config = {"config_list": config_list, "timeout": 60, "temperature": 0}
+
+# User proxy — represents the human, can execute code
+user_proxy = autogen.UserProxyAgent(
+    name="User_Proxy",
+    human_input_mode="NEVER",  # Fully autonomous; use "ALWAYS" for human loop
+    max_consecutive_auto_reply=10,
+    code_execution_config={"work_dir": "coding", "use_docker": False}
+)
+
+# Assistant agent — the AI
+assistant = autogen.AssistantAgent(
+    name="Assistant",
+    llm_config=llm_config,
+    system_message="You are a helpful AI assistant. Write Python code to solve problems."
+)
+
+# Critic agent — reviews the assistant's work
+critic = autogen.AssistantAgent(
+    name="Critic",
+    llm_config=llm_config,
+    system_message="""You are a code reviewer. Review the code for:
+    1. Correctness and edge cases
+    2. Security vulnerabilities
+    3. Performance issues
+    Provide specific, actionable feedback."""
+)
+
+# Group chat for multi-agent conversation
+groupchat = autogen.GroupChat(
+    agents=[user_proxy, assistant, critic],
+    messages=[],
+    max_round=15,
+    speaker_selection_method="round_robin"
+)
+
+manager = autogen.GroupChatManager(
+    groupchat=groupchat,
+    llm_config=llm_config
+)
+
+# Start the conversation
+user_proxy.initiate_chat(
+    manager,
+    message="Write a Python function that validates email addresses using regex, "
+            "then write comprehensive unit tests for it."
+)</code></pre>
+
+  <h2>Framework 3: LangGraph</h2>
+  <p>LangGraph models workflows as a stateful graph — nodes are agents/functions, edges define flow, and state is shared across nodes. Best for complex workflows with branching logic and human-in-the-loop.</p>
+
+<pre><code">pip install langgraph langchain-anthropic</code></pre>
+
+<pre><code">from typing import TypedDict, Annotated, Sequence
+from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+import operator
+
+# Define the shared state
+class AgentState(TypedDict):
+    messages: Annotated[Sequence[BaseMessage], operator.add]
+    current_agent: str
+    draft: str
+    feedback: str
+    approved: bool
+
+llm = ChatAnthropic(model="claude-opus-4-6")
+
+# Define agent node functions
+def researcher_agent(state: AgentState) -> dict:
+    """Research and create initial draft"""
+    response = llm.invoke([
+        HumanMessage(content=f"""You are a researcher. Create a detailed outline for:
+        {state['messages'][-1].content}
+        Return a structured outline.""")
+    ])
+    return {
+        "messages": [AIMessage(content=response.content, name="researcher")],
+        "draft": response.content,
+        "current_agent": "reviewer"
+    }
+
+def reviewer_agent(state: AgentState) -> dict:
+    """Review the draft and provide feedback"""
+    response = llm.invoke([
+        HumanMessage(content=f"""Review this outline and rate it 1-10.
+        If score >= 8, say 'APPROVED'. Otherwise provide specific improvements.
+
+        Outline:
+        {state['draft']}""")
+    ])
+
+    approved = "APPROVED" in response.content.upper()
+    return {
+        "messages": [AIMessage(content=response.content, name="reviewer")],
+        "feedback": response.content,
+        "approved": approved,
+        "current_agent": "writer" if approved else "researcher"
+    }
+
+def writer_agent(state: AgentState) -> dict:
+    """Write the final article"""
+    response = llm.invoke([
+        HumanMessage(content=f"""Write a complete article based on this approved outline:
+        {state['draft']}
+        Write 800-1000 words.""")
+    ])
+    return {
+        "messages": [AIMessage(content=response.content, name="writer")],
+        "draft": response.content,
+        "current_agent": "done"
+    }
+
+# Build the graph
+def should_continue(state: AgentState) -> str:
+    """Router: decide which node to go to next"""
+    if state.get("approved"):
+        return "writer"
+    return "researcher"  # Loop back for revision
+
+workflow = StateGraph(AgentState)
+
+# Add nodes
+workflow.add_node("researcher", researcher_agent)
+workflow.add_node("reviewer", reviewer_agent)
+workflow.add_node("writer", writer_agent)
+
+# Add edges
+workflow.set_entry_point("researcher")
+workflow.add_edge("researcher", "reviewer")
+workflow.add_conditional_edges("reviewer", should_continue, {
+    "researcher": "researcher",  # Revise
+    "writer": "writer"            # Approved
+})
+workflow.add_edge("writer", END)
+
+# Compile with memory (enables human-in-the-loop checkpointing)
+memory = MemorySaver()
+app = workflow.compile(checkpointer=memory)
+
+# Run
+config = {"configurable": {"thread_id": "article-1"}}
+result = app.invoke(
+    {"messages": [HumanMessage(content="The future of AI agents in healthcare")]},
+    config=config
+)
+print(result["draft"])</code></pre>
+
+  <h2>Choosing the Right Framework</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>CrewAI</h4>
+      <p>Best for: Role-based teams, straightforward sequential/hierarchical workflows, getting started quickly with multi-agent concepts.</p>
+    </div>
+    <div class="card">
+      <h4>AutoGen</h4>
+      <p>Best for: Conversational agents, code generation + execution workflows, research tasks, Microsoft ecosystem.</p>
+    </div>
+    <div class="card">
+      <h4>LangGraph</h4>
+      <p>Best for: Complex workflows with branching/cycles, human-in-the-loop, stateful applications, production systems.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Production recommendation:</strong> LangGraph is the most flexible and production-ready option for complex systems. CrewAI is the fastest to prototype with. AutoGen excels for autonomous code-generation workflows.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>Multi-agent systems enable parallelization, specialization, and quality checking</li>
+    <li>CrewAI: role-based crews with natural language task descriptions — best for quick prototyping</li>
+    <li>AutoGen: conversational agents that talk to each other — best for code-heavy workflows</li>
+    <li>LangGraph: stateful graph workflows with branching — best for production-grade systems</li>
+    <li>Add human-in-the-loop checkpoints for any high-stakes agent workflow</li>
+    <li>Start single-agent, add multi-agent complexity only when genuinely needed</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../basic/intro-to-ai-agents.html">← Intro to AI Agents</a>
+    <a class="nav-link" href="../advanced/production-agentic-systems.html">Next: Production Agentic Systems →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Agents · Intermediate Level</footer>
+</body>
+</html>

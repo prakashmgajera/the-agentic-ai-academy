@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Context Protocol (MCP) Explained — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">AI Engineering Tools</a> › Model Context Protocol</nav>
+<div class="hero">
+  <span class="badge">🟡 Intermediate</span>
+  <h1>Model Context Protocol (MCP):<br>The USB-C of AI Tool Integration</h1>
+  <div class="meta"><span>🛠️ AI Engineering Tools</span><span>⏱ 15 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Model Context Protocol (MCP) is an open standard developed by Anthropic that defines how AI models connect to external tools and data sources. Think of it as USB-C for AI — a universal connector that lets any AI application work with any tool or service through a common interface.</p>
+
+  <h2>The Problem MCP Solves</h2>
+  <p>Before MCP, every AI application needed custom integrations for each tool:</p>
+  <ul>
+    <li>App A implements Google Drive integration → can't be reused by App B</li>
+    <li>App B implements Slack integration → different interface than App A's</li>
+    <li>100 AI apps × 100 tools = 10,000 custom integrations</li>
+  </ul>
+  <p>With MCP, tools expose a standard interface. AI apps implement the MCP client protocol once. Result: any MCP-compatible app works with any MCP-compatible tool — the "N × M problem" becomes "N + M."</p>
+
+  <div class="callout">
+    <strong>The analogy:</strong> Before USB, every device had its own connector. USB standardized it. Before MCP, every AI tool had a custom API. MCP standardizes the AI-to-tool interface.
+  </div>
+
+  <h2>MCP Architecture</h2>
+  <p>MCP has three layers:</p>
+  <ul>
+    <li><strong>MCP Host:</strong> The AI application (Claude Desktop, Claude Code, your custom app)</li>
+    <li><strong>MCP Client:</strong> Built into the host — manages connections to servers</li>
+    <li><strong>MCP Server:</strong> Exposes tools, resources, and prompts via the MCP protocol</li>
+  </ul>
+  <p>Communication happens over:</p>
+  <ul>
+    <li><strong>stdio:</strong> Local servers — MCP client spawns a subprocess and communicates via stdin/stdout</li>
+    <li><strong>SSE (Server-Sent Events):</strong> Remote servers — HTTP with persistent event stream</li>
+  </ul>
+
+  <h2>MCP Primitives: Tools, Resources & Prompts</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Tools</h4>
+      <p>Functions the model can call with arguments. Like function calling — but standardized and reusable across any MCP-compatible AI.</p>
+    </div>
+    <div class="card">
+      <h4>Resources</h4>
+      <p>Data the model can read. Files, database rows, API responses — exposed as URIs the model can access.</p>
+    </div>
+    <div class="card">
+      <h4>Prompts</h4>
+      <p>Reusable prompt templates that users can invoke. Parameterized, versioned, and shared via the server.</p>
+    </div>
+  </div>
+
+  <h2>Building an MCP Server in Python</h2>
+<pre><code"># Install: pip install mcp
+from mcp.server.fastmcp import FastMCP
+from typing import Optional
+import httpx
+import json
+
+# Create the MCP server
+mcp = FastMCP("my-company-tools")
+
+@mcp.tool()
+async def get_customer_info(customer_id: str) -> str:
+    """
+    Get detailed information about a customer by their ID.
+
+    Args:
+        customer_id: The unique customer identifier (e.g., 'CUST-12345')
+
+    Returns:
+        JSON string with customer name, email, plan, and account status
+    """
+    # In production, query your actual database
+    # Here we simulate it
+    customers = {
+        "CUST-001": {
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "plan": "Enterprise",
+            "status": "active",
+            "mrr": 2499.00
+        }
+    }
+    customer = customers.get(customer_id)
+    if not customer:
+        return json.dumps({"error": f"Customer {customer_id} not found"})
+    return json.dumps(customer)
+
+@mcp.tool()
+async def search_knowledge_base(query: str, limit: int = 5) -> str:
+    """
+    Search the company knowledge base for relevant articles.
+
+    Args:
+        query: Search query in natural language
+        limit: Maximum number of results to return (1-20)
+    """
+    # Connect to your actual search backend
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "https://your-kb-api.internal/search",
+            params={"q": query, "limit": min(limit, 20)},
+            headers={"Authorization": "Bearer your-internal-token"}
+        )
+        results = response.json()
+    return json.dumps(results)
+
+@mcp.tool()
+async def create_support_ticket(
+    customer_id: str,
+    subject: str,
+    description: str,
+    priority: str = "normal"
+) -> str:
+    """
+    Create a support ticket for a customer.
+
+    Args:
+        customer_id: Customer identifier
+        subject: Brief subject line (max 100 chars)
+        description: Detailed description of the issue
+        priority: Ticket priority - 'low', 'normal', 'high', 'urgent'
+    """
+    if priority not in ("low", "normal", "high", "urgent"):
+        return json.dumps({"error": "Invalid priority. Use: low, normal, high, urgent"})
+
+    # Create ticket in your ticketing system
+    ticket = {
+        "ticket_id": "TKT-98765",
+        "customer_id": customer_id,
+        "subject": subject,
+        "priority": priority,
+        "status": "open",
+        "created_at": "2026-05-30T10:00:00Z"
+    }
+    return json.dumps({"success": True, "ticket": ticket})
+
+# Expose a resource (readable data)
+@mcp.resource("config://company/support-policies")
+async def get_support_policies() -> str:
+    """Read-only access to support policies."""
+    return """
+    SUPPORT POLICIES (v2.1, updated 2026-05):
+    - Response SLA: 4h (normal), 1h (high), 15min (urgent)
+    - Refund policy: Full refund within 30 days, pro-rated after
+    - Escalation: VP of Support for enterprise customers
+    """
+
+# Run the server (stdio mode for Claude Desktop)
+if __name__ == "__main__":
+    mcp.run(transport="stdio")</code></pre>
+
+  <h2>MCP Server Configuration</h2>
+  <p>Configure Claude Desktop or Claude Code to use your server by adding it to the MCP config file:</p>
+<pre><code"># claude_desktop_config.json (Mac: ~/Library/Application Support/Claude/)
+{
+  "mcpServers": {
+    "my-company-tools": {
+      "command": "python",
+      "args": ["/path/to/your/mcp_server.py"],
+      "env": {
+        "DATABASE_URL": "postgresql://...",
+        "API_KEY": "your-internal-api-key"
+      }
+    },
+
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem",
+               "/Users/you/Documents"]
+    },
+
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_..."
+      }
+    }
+  }
+}</code></pre>
+
+  <h2>Using MCP from Your Own Application</h2>
+<pre><code"># Connect to MCP servers from your Python application
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+async def use_mcp_tools():
+    server_params = StdioServerParameters(
+        command="python",
+        args=["mcp_server.py"]
+    )
+
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            # Initialize
+            await session.initialize()
+
+            # List available tools
+            tools = await session.list_tools()
+            print(f"Available tools: {[t.name for t in tools.tools]}")
+
+            # Call a tool
+            result = await session.call_tool(
+                "get_customer_info",
+                {"customer_id": "CUST-001"}
+            )
+            print(f"Tool result: {result.content[0].text}")
+
+            # Read a resource
+            resource = await session.read_resource(
+                "config://company/support-policies"
+            )
+            print(f"Resource: {resource.contents[0].text}")
+
+asyncio.run(use_mcp_tools())</code></pre>
+
+  <h2>Popular Pre-Built MCP Servers</h2>
+  <ul>
+    <li><strong>filesystem</strong> — read/write local files with access controls</li>
+    <li><strong>github</strong> — search repos, read files, create issues and PRs</li>
+    <li><strong>postgres</strong> — query PostgreSQL databases safely</li>
+    <li><strong>brave-search</strong> — web and local search</li>
+    <li><strong>slack</strong> — read channels, search messages, post replies</li>
+    <li><strong>google-drive</strong> — read and search Drive files</li>
+    <li><strong>puppeteer</strong> — browser automation for web interactions</li>
+  </ul>
+  <p>Install via: <code>npx -y @modelcontextprotocol/server-github</code></p>
+
+  <div class="callout">
+    <strong>MCP vs direct tool calling:</strong> Direct tool calling embeds tools in your application code. MCP separates tool implementation from AI application — tools are standalone servers that any MCP-compatible AI can use. Choose MCP when you want reusable tools across multiple AI applications or teams.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>MCP standardizes how AI models connect to tools — write once, use with any MCP-compatible AI</li>
+    <li>Three primitives: Tools (callable functions), Resources (readable data), Prompts (templates)</li>
+    <li>FastMCP makes building Python MCP servers extremely simple — just <code>@mcp.tool()</code> decorators</li>
+    <li>Configure Claude Desktop/Code to use your servers via the JSON config file</li>
+    <li>Dozens of pre-built MCP servers available for common services (GitHub, Slack, databases)</li>
+    <li>MCP is Anthropic's open standard — now supported by VS Code, Cursor, and growing ecosystem</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../06-vector-databases/advanced/vector-db-optimization.html">← Vector DB Optimization</a>
+    <a class="nav-link" href="../advanced/production-ai-systems.html">Next: Production AI Systems →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Engineering Tools · Intermediate Level</footer>
+</body>
+</html>

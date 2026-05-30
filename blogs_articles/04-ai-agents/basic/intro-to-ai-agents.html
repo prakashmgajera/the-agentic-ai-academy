@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to AI Agents — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  .loop{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin:1.5rem 0;padding:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+  .loop-step{background:rgba(99,102,241,0.2);border:1px solid var(--primary);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.875rem;font-weight:600;color:var(--primary-light);}
+  .loop-arrow{color:var(--muted);}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">AI Agents</a> › Introduction to AI Agents</nav>
+<div class="hero">
+  <span class="badge">🟢 Basic</span>
+  <h1>Introduction to AI Agents:<br>What They Are and How They Work</h1>
+  <div class="meta"><span>🤖 AI Agents</span><span>⏱ 11 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>AI agents are one of the most significant developments in artificial intelligence. They transform LLMs from glorified autocomplete systems into systems that can reason, plan, use tools, and accomplish complex multi-step tasks autonomously. If you've heard the term "agentic AI" — this is the foundation.</p>
+
+  <h2>What Makes an AI Agent Different from a Chatbot?</h2>
+  <p>A chatbot responds to a message. An AI agent pursues a goal.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Traditional Chatbot</h4>
+      <p>Takes one input → produces one output. Stateless. Can't take actions. Responds to what's asked.</p>
+    </div>
+    <div class="card">
+      <h4>AI Agent</h4>
+      <p>Receives a goal → plans → takes actions → observes results → adapts → repeats until done.</p>
+    </div>
+  </div>
+
+  <p>The key difference is that agents can <strong>act in the world</strong> — browsing the web, writing and running code, calling APIs, managing files, sending emails — and they do so iteratively, adapting based on what they observe.</p>
+
+  <h2>The Agent Loop</h2>
+  <p>Every AI agent runs some variation of this loop:</p>
+  <div class="loop">
+    <div class="loop-step">🎯 Goal</div><div class="loop-arrow">→</div>
+    <div class="loop-step">🧠 Think</div><div class="loop-arrow">→</div>
+    <div class="loop-step">🔧 Act</div><div class="loop-arrow">→</div>
+    <div class="loop-step">👁 Observe</div><div class="loop-arrow">→</div>
+    <div class="loop-step">🧠 Think</div><div class="loop-arrow">→</div>
+    <div class="loop-step">... repeat</div><div class="loop-arrow">→</div>
+    <div class="loop-step">✅ Done</div>
+  </div>
+  <ol>
+    <li><strong>Goal:</strong> The user provides a high-level objective ("Research competitors and create a summary report")</li>
+    <li><strong>Think:</strong> The LLM reasons about what to do next — what information is needed? what tool should I use?</li>
+    <li><strong>Act:</strong> The agent calls a tool (web search, code execution, file read, API call)</li>
+    <li><strong>Observe:</strong> The result of the action is fed back to the LLM</li>
+    <li><strong>Repeat:</strong> The LLM decides next action based on what it observed</li>
+    <li><strong>Done:</strong> The agent determines the goal is achieved and returns the final result</li>
+  </ol>
+
+  <h2>The Four Core Components of an Agent</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>🧠 LLM (the Brain)</h4>
+      <p>The language model that reasons, plans, and decides what to do next. Claude, GPT-4, Gemini, or open-source alternatives.</p>
+    </div>
+    <div class="card">
+      <h4>🔧 Tools</h4>
+      <p>External capabilities the agent can call: web search, code runner, file system, databases, APIs, calendar, email.</p>
+    </div>
+    <div class="card">
+      <h4>💾 Memory</h4>
+      <p>Short-term (conversation history in context window) and long-term (vector DB, external storage).</p>
+    </div>
+    <div class="card">
+      <h4>📋 Planning</h4>
+      <p>The ability to break a goal into steps and adapt the plan as new information arrives.</p>
+    </div>
+  </div>
+
+  <h2>Tool Use: How Agents Act in the World</h2>
+  <p>Tools are functions the agent can call. Modern LLMs support function/tool calling natively — the model outputs a structured request to call a specific function with specific arguments, instead of plain text.</p>
+
+<pre><code">import anthropic
+
+client = anthropic.Anthropic()
+
+# Define the tools available to the agent
+tools = [
+    {
+        "name": "web_search",
+        "description": "Search the web for current information",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query"
+                }
+            },
+            "required": ["query"]
+        }
+    },
+    {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "city": {"type": "string"}
+            },
+            "required": ["city"]
+        }
+    }
+]
+
+# The agent decides which tool to call
+response = client.messages.create(
+    model="claude-opus-4-6",
+    max_tokens=1024,
+    tools=tools,
+    messages=[
+        {"role": "user", "content": "What's the weather in Tokyo right now?"}
+    ]
+)
+
+# If the model wants to use a tool, it returns a tool_use block
+if response.stop_reason == "tool_use":
+    tool_call = next(b for b in response.content if b.type == "tool_use")
+    print(f"Agent wants to call: {tool_call.name}")
+    print(f"With arguments: {tool_call.input}")
+    # → Agent wants to call: get_weather
+    # → With arguments: {"city": "Tokyo"}</code></pre>
+
+  <h2>A Minimal Working Agent</h2>
+<pre><code">import anthropic
+import json
+
+client = anthropic.Anthropic()
+
+def web_search(query: str) -> str:
+    """Simulate a web search (replace with real search API)"""
+    return f"[Search results for '{query}': Simulated results here]"
+
+def calculator(expression: str) -> str:
+    """Evaluate a math expression"""
+    try:
+        return str(eval(expression))  # In production, use safer eval
+    except Exception as e:
+        return f"Error: {e}"
+
+TOOLS = [
+    {"name": "web_search", "description": "Search the web",
+     "input_schema": {"type": "object", "properties": {
+         "query": {"type": "string"}}, "required": ["query"]}},
+    {"name": "calculator", "description": "Calculate math",
+     "input_schema": {"type": "object", "properties": {
+         "expression": {"type": "string"}}, "required": ["expression"]}}
+]
+
+TOOL_FUNCTIONS = {"web_search": web_search, "calculator": calculator}
+
+def run_agent(user_goal: str, max_iterations: int = 10) -> str:
+    messages = [{"role": "user", "content": user_goal}]
+
+    for i in range(max_iterations):
+        response = client.messages.create(
+            model="claude-opus-4-6",
+            max_tokens=2048,
+            tools=TOOLS,
+            messages=messages
+        )
+
+        # Add assistant response to history
+        messages.append({"role": "assistant", "content": response.content})
+
+        if response.stop_reason == "end_turn":
+            # Extract final text response
+            text = next(b.text for b in response.content if hasattr(b, "text"))
+            return text
+
+        if response.stop_reason == "tool_use":
+            # Execute each tool call
+            tool_results = []
+            for block in response.content:
+                if block.type == "tool_use":
+                    fn = TOOL_FUNCTIONS[block.name]
+                    result = fn(**block.input)
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": result
+                    })
+
+            # Feed results back to the agent
+            messages.append({"role": "user", "content": tool_results})
+
+    return "Maximum iterations reached."
+
+# Run it!
+result = run_agent("What is 2847 * 3.14159 and what is the capital of France?")
+print(result)</code></pre>
+
+  <h2>Types of AI Agents</h2>
+  <div class="card-grid">
+    <div class="card"><h4>ReAct Agent</h4><p>Reason + Act in alternating steps. The most common pattern. Foundation of most frameworks.</p></div>
+    <div class="card"><h4>Plan & Execute</h4><p>Make a full plan upfront, then execute step by step. Better for structured tasks.</p></div>
+    <div class="card"><h4>Multi-Agent</h4><p>Multiple specialized agents collaborate. One orchestrator, many workers. Better for complex tasks.</p></div>
+    <div class="card"><h4>Code Agent</h4><p>Writes and executes code to solve problems. Can iterate until tests pass. (Devin, Claude Code)</p></div>
+  </div>
+
+  <h2>Where AI Agents Are Used Today</h2>
+  <ul>
+    <li><strong>Software engineering:</strong> Claude Code, GitHub Copilot Workspace — write, test, debug code autonomously</li>
+    <li><strong>Research:</strong> Deep Research (Perplexity, OpenAI) — multi-step web research and synthesis</li>
+    <li><strong>Customer service:</strong> Agents that can look up orders, process refunds, and update accounts</li>
+    <li><strong>Data analysis:</strong> Connect to databases, write SQL, analyze, and visualize data</li>
+    <li><strong>Personal assistants:</strong> Manage calendar, email, and tasks across connected apps</li>
+    <li><strong>Sales & marketing:</strong> Research prospects, draft personalized outreach, track follow-ups</li>
+  </ul>
+
+  <div class="callout">
+    <strong>The key insight:</strong> Agents unlock exponential value from LLMs. A chatbot can answer questions about your data. An agent can analyze it, identify trends, write a report, and email it to stakeholders — autonomously.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>AI agents pursue goals through iterative think → act → observe loops</li>
+    <li>Four components: LLM brain, tools, memory, planning</li>
+    <li>Tool use = the agent's ability to interact with external systems</li>
+    <li>Modern LLMs have native tool-calling built in (structured function invocation)</li>
+    <li>The agent loop runs until the goal is achieved or a maximum iteration limit is hit</li>
+    <li>Agents unlock automation of complex, multi-step workflows that chatbots can't handle</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../03-rag/advanced/advanced-rag-patterns.html">← Advanced RAG</a>
+    <a class="nav-link" href="../intermediate/multi-agent-systems.html">Next: Multi-Agent Systems →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Agents · Basic Level</footer>
+</body>
+</html>

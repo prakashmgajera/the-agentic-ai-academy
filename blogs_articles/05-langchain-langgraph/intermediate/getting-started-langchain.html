@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started with LangChain — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">LangChain & LangGraph</a> › Getting Started with LangChain</nav>
+<div class="hero">
+  <span class="badge">🟡 Intermediate</span>
+  <h1>Getting Started with LangChain:<br>Chains, Tools, Memory & LCEL</h1>
+  <div class="meta"><span>⛓️ LangChain</span><span>⏱ 17 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>LangChain is the most widely used framework for building LLM applications. It provides abstractions for the most common patterns: chaining LLM calls, connecting to tools and data sources, managing memory, and building agents. This guide covers everything you need to be productive with LangChain.</p>
+
+  <h2>Setup</h2>
+<pre><code>pip install langchain langchain-anthropic langchain-openai
+pip install langchain-community langchain-core python-dotenv</code></pre>
+
+<pre><code">from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
+
+# Initialize a model
+llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=0)
+
+# Simple invocation
+response = llm.invoke("What is the capital of France?")
+print(response.content)  # "The capital of France is Paris."</code></pre>
+
+  <h2>Core Concept 1: LangChain Expression Language (LCEL)</h2>
+  <p>LCEL is LangChain's declarative way to compose chains using the pipe <code>|</code> operator. It enables streaming, batching, async, and parallel execution automatically.</p>
+
+<pre><code">from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel
+
+# Basic chain: prompt → LLM → parser
+prompt = ChatPromptTemplate.from_template("Explain {topic} in one sentence.")
+chain = prompt | llm | StrOutputParser()
+
+result = chain.invoke({"topic": "embeddings"})
+print(result)
+
+# Streaming
+for chunk in chain.stream({"topic": "transformers"}):
+    print(chunk, end="", flush=True)
+
+# Batch processing
+results = chain.batch([
+    {"topic": "RAG"},
+    {"topic": "fine-tuning"},
+    {"topic": "prompt engineering"}
+])
+
+# Parallel chains (run simultaneously)
+parallel_chain = RunnableParallel(
+    summary=prompt | llm | StrOutputParser(),
+    key_points=ChatPromptTemplate.from_template(
+        "List 3 key points about {topic}"
+    ) | llm | StrOutputParser()
+)
+result = parallel_chain.invoke({"topic": "vector databases"})</code></pre>
+
+  <h2>Core Concept 2: Prompt Templates</h2>
+<pre><code">from langchain_core.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate
+)
+
+# Simple template
+template = ChatPromptTemplate.from_messages([
+    ("system", "You are a {role}. Respond in {language}."),
+    ("human", "{question}")
+])
+
+# Template with few-shot examples
+from langchain_core.prompts import FewShotChatMessagePromptTemplate
+
+examples = [
+    {"input": "happy", "output": "sad"},
+    {"input": "tall", "output": "short"},
+]
+example_prompt = ChatPromptTemplate.from_messages([
+    ("human", "{input}"), ("ai", "{output}")
+])
+
+few_shot_prompt = FewShotChatMessagePromptTemplate(
+    example_prompt=example_prompt,
+    examples=examples,
+)
+final_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You give antonyms."),
+    few_shot_prompt,
+    ("human", "{word}")
+])
+
+# Template with chat history placeholder
+chat_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant."),
+    MessagesPlaceholder(variable_name="history"),
+    ("human", "{input}")
+])</code></pre>
+
+  <h2>Core Concept 3: Memory & Conversation History</h2>
+<pre><code">from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+
+# Create a basic chain
+chain = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant."),
+    MessagesPlaceholder(variable_name="history"),
+    ("human", "{input}")
+]) | llm | StrOutputParser()
+
+# Wrap with message history
+store = {}  # In production, use Redis or a database
+
+def get_session_history(session_id: str) -> ChatMessageHistory:
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]
+
+chain_with_history = RunnableWithMessageHistory(
+    chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="history"
+)
+
+# Each call maintains context via session_id
+config = {"configurable": {"session_id": "user-123"}}
+response1 = chain_with_history.invoke({"input": "My name is Alice."}, config=config)
+response2 = chain_with_history.invoke({"input": "What's my name?"}, config=config)
+print(response2)  # "Your name is Alice."</code></pre>
+
+  <h2>Core Concept 4: Tools & Agents</h2>
+<pre><code">from langchain_core.tools import tool
+from langchain.agents import create_tool_calling_agent, AgentExecutor
+
+@tool
+def get_company_info(company_name: str) -> str:
+    """Get information about a company including founding year and HQ location."""
+    # In real use, call an API
+    info = {
+        "Anthropic": "Founded 2021, HQ San Francisco, CA. AI safety company.",
+        "OpenAI": "Founded 2015, HQ San Francisco, CA. AI research lab.",
+    }
+    return info.get(company_name, f"No data found for {company_name}")
+
+@tool
+def calculate_age(founding_year: int) -> str:
+    """Calculate how many years old a company is."""
+    from datetime import datetime
+    age = datetime.now().year - founding_year
+    return f"The company is {age} years old."
+
+tools = [get_company_info, calculate_age]
+
+# Create agent
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful business analyst. Use tools to answer questions."),
+    ("human", "{input}"),
+    MessagesPlaceholder(variable_name="agent_scratchpad")
+])
+
+agent = create_tool_calling_agent(llm, tools, prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+result = agent_executor.invoke({"input": "When was Anthropic founded and how old is it now?"})
+print(result["output"])</code></pre>
+
+  <h2>Core Concept 5: Output Parsers</h2>
+<pre><code">from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Field
+from typing import List
+
+# Structured output with Pydantic
+class MovieReview(BaseModel):
+    title: str = Field(description="Movie title")
+    year: int = Field(description="Release year")
+    rating: float = Field(description="Rating from 0.0 to 10.0")
+    pros: List[str] = Field(description="List of positive aspects")
+    cons: List[str] = Field(description="List of negative aspects")
+
+parser = JsonOutputParser(pydantic_object=MovieReview)
+
+review_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a film critic. {format_instructions}"),
+    ("human", "Review this movie: {movie}")
+])
+
+review_chain = review_prompt | llm | parser
+
+result = review_chain.invoke({
+    "movie": "Inception (2010)",
+    "format_instructions": parser.get_format_instructions()
+})
+print(result)  # Returns a MovieReview object</code></pre>
+
+  <h2>Advanced: Custom Runnables & Error Handling</h2>
+<pre><code">from langchain_core.runnables import RunnableLambda
+from langchain_core.runnables.retry import RunnableRetry
+
+# Custom processing step
+def uppercase_result(text: str) -> str:
+    return text.upper()
+
+chain_with_custom = chain | RunnableLambda(uppercase_result)
+
+# Add retry logic to any runnable
+chain_with_retry = chain.with_retry(
+    stop_after_attempt=3,
+    wait_exponential_jitter=True
+)
+
+# Fallback chains
+from langchain_core.runnables import RunnableWithFallbacks
+expensive_chain = ChatAnthropic(model="claude-opus-4-6") | StrOutputParser()
+cheap_chain = ChatAnthropic(model="claude-haiku-4-5-20251001") | StrOutputParser()
+
+# Try expensive model first, fall back to cheap on error
+chain_with_fallback = expensive_chain.with_fallbacks([cheap_chain])</code></pre>
+
+  <div class="callout">
+    <strong>LCEL mental model:</strong> Every component (LLM, prompt, parser, tool) is a <code>Runnable</code>. The <code>|</code> operator chains them: output of left becomes input of right. This uniform interface means streaming, batching, async, and tracing work automatically across the entire chain.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>LCEL's <code>|</code> operator chains runnables — enables streaming/batch/async automatically</li>
+    <li>Use <code>ChatPromptTemplate</code> with <code>MessagesPlaceholder</code> for dynamic multi-turn prompts</li>
+    <li><code>RunnableWithMessageHistory</code> adds session-aware memory to any chain</li>
+    <li><code>@tool</code> decorator turns any Python function into a tool the agent can use</li>
+    <li>Pydantic + <code>JsonOutputParser</code> enforces structured, typed output</li>
+    <li><code>with_retry</code> and <code>with_fallbacks</code> add resilience to any runnable</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../04-ai-agents/advanced/production-agentic-systems.html">← Production Agents</a>
+    <a class="nav-link" href="../advanced/stateful-agents-langgraph.html">Next: LangGraph Deep Dive →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · LangChain & LangGraph · Intermediate Level</footer>
+</body>
+</html>

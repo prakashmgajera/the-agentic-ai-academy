@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced RAG Patterns — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .pattern-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0;}
+  .pattern-card h3{color:var(--primary-light);margin-top:0;font-size:1.1rem;}
+  .pattern-card .when{font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;font-style:italic;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .pattern-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1.5rem 0;}
+  .mini-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;}
+  .mini-card h4{font-size:0.9rem;font-weight:600;color:var(--primary-light);margin-bottom:0.4rem;}
+  .mini-card p{font-size:0.8rem;color:var(--muted);margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">RAG</a> › Advanced RAG Patterns</nav>
+<div class="hero">
+  <span class="badge">🔴 Advanced</span>
+  <h1>Advanced RAG Patterns:<br>HyDE, GraphRAG, Self-RAG & Beyond</h1>
+  <div class="meta"><span>🔍 RAG</span><span>⏱ 20 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Basic RAG — embed, search, generate — gets you 70% of the way. The remaining 30% of quality comes from advanced patterns that address specific failure modes: poor query-document alignment, multi-hop reasoning, information freshness, and answer grounding. This article covers the patterns that production RAG systems rely on.</p>
+
+  <h2>Query-Side Patterns</h2>
+
+  <div class="pattern-card">
+    <h3>1. HyDE — Hypothetical Document Embeddings</h3>
+    <div class="when">Problem: User queries are often short and vague; documents are detailed and specific. The semantic gap causes retrieval misses.</div>
+    <p>Instead of embedding the query directly, ask the LLM to generate a <em>hypothetical document</em> that would answer the query — then embed and search with that. The hypothetical document uses vocabulary and phrasing that better matches real documents.</p>
+<pre><code>from langchain_core.prompts import ChatPromptTemplate
+from langchain_anthropic import ChatAnthropic
+
+def hyde_retrieve(query: str, retriever, llm) -> list:
+    # Step 1: Generate a hypothetical document
+    hyde_prompt = ChatPromptTemplate.from_template(
+        """Write a 2-paragraph technical document that directly answers:
+        '{query}'
+        Be specific and use domain-appropriate terminology."""
+    )
+    hypothetical_doc = llm.invoke(
+        hyde_prompt.format_messages(query=query)
+    ).content
+
+    # Step 2: Retrieve using the hypothetical doc
+    results = retriever.invoke(hypothetical_doc)
+
+    # Optionally also retrieve using the original query and merge
+    original_results = retriever.invoke(query)
+    all_results = results + [r for r in original_results if r not in results]
+    return all_results[:4]  # Top 4 deduplicated</code></pre>
+    <p><strong>When to use:</strong> Short/vague queries, technical domains, when queries use different vocabulary than documents.</p>
+  </div>
+
+  <div class="pattern-card">
+    <h3>2. Query Decomposition (Multi-Hop RAG)</h3>
+    <div class="when">Problem: Complex queries require information from multiple documents that can't be retrieved in a single search.</div>
+    <p>Decompose the query into sub-questions, retrieve for each, then synthesize the final answer.</p>
+<pre><code>def multi_hop_rag(complex_query: str, retriever, llm) -> str:
+    # Step 1: Decompose into sub-questions
+    decompose_prompt = f"""Break this question into 2-4 simpler sub-questions
+    that can each be answered independently:
+    Question: {complex_query}
+    Sub-questions (one per line):"""
+
+    sub_questions = llm.invoke(decompose_prompt).content.strip().split("\n")
+
+    # Step 2: Retrieve and answer each sub-question
+    sub_answers = []
+    for sq in sub_questions:
+        docs = retriever.invoke(sq)
+        context = "\n\n".join([d.page_content for d in docs])
+        answer = llm.invoke(f"Context: {context}\n\nQuestion: {sq}\nAnswer:").content
+        sub_answers.append(f"Q: {sq}\nA: {answer}")
+
+    # Step 3: Synthesize final answer
+    synthesis = llm.invoke(f"""
+    Based on these research findings, answer the original question:
+
+    Research findings:
+    {chr(10).join(sub_answers)}
+
+    Original question: {complex_query}
+    Final answer:""").content
+
+    return synthesis</code></pre>
+  </div>
+
+  <div class="pattern-card">
+    <h3>3. Step-Back Prompting</h3>
+    <div class="when">Problem: Specific queries fail because the relevant document discusses the general principle, not the specific case.</div>
+    <p>Ask a "step-back" question — a more general version of the specific query — retrieve for both, and combine contexts.</p>
+<pre><code>def stepback_retrieve(specific_query: str, retriever, llm) -> list:
+    # Generate a more abstract version of the query
+    stepback_prompt = f"""Given the specific question: '{specific_query}'
+    What is the underlying general principle or concept being asked about?
+    Write a more general question:"""
+
+    general_query = llm.invoke(stepback_prompt).content
+
+    # Retrieve for both
+    specific_docs = retriever.invoke(specific_query)
+    general_docs = retriever.invoke(general_query)
+
+    # Combine and deduplicate
+    all_docs = specific_docs + [d for d in general_docs if d not in specific_docs]
+    return all_docs[:6]</code></pre>
+  </div>
+
+  <h2>Retrieval-Side Patterns</h2>
+
+  <div class="pattern-card">
+    <h3>4. Hybrid Search (Keyword + Semantic)</h3>
+    <div class="when">Problem: Pure vector search misses exact keyword matches; pure BM25 misses semantic matches. You need both.</div>
+<pre><code>from langchain_community.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
+
+# BM25 retriever (keyword-based, no embeddings needed)
+bm25_retriever = BM25Retriever.from_documents(chunks)
+bm25_retriever.k = 4
+
+# Vector retriever (semantic)
+vector_retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+
+# Ensemble with weighted combination
+hybrid_retriever = EnsembleRetriever(
+    retrievers=[bm25_retriever, vector_retriever],
+    weights=[0.4, 0.6]  # Weight semantic slightly higher
+)
+
+results = hybrid_retriever.invoke("GDPR Article 17 right to erasure")</code></pre>
+    <p><strong>When to use:</strong> Always — hybrid search consistently outperforms either approach alone. Especially critical for queries with specific names, codes, or technical terms.</p>
+  </div>
+
+  <div class="pattern-card">
+    <h3>5. Re-Ranking with Cross-Encoders</h3>
+    <div class="when">Problem: First-stage retrieval (bi-encoder) trades accuracy for speed. Re-ranking adds a slower, more accurate second pass.</div>
+<pre><code">from sentence_transformers import CrossEncoder
+
+# Cross-encoder re-ranker — evaluates query-document pairs jointly
+# (much slower but much more accurate than bi-encoder similarity)
+reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+
+def retrieve_and_rerank(query: str, retriever, top_k: int = 4) -> list:
+    # First pass: retrieve many candidates (25 is a common choice)
+    candidates = retriever.invoke(query)
+
+    # Second pass: re-rank with cross-encoder
+    pairs = [(query, doc.page_content) for doc in candidates]
+    scores = reranker.predict(pairs)
+
+    # Sort by re-rank score and return top_k
+    ranked = sorted(zip(scores, candidates), reverse=True)
+    return [doc for _, doc in ranked[:top_k]]</code></pre>
+  </div>
+
+  <div class="pattern-card">
+    <h3>6. Parent-Child Chunking (Small-to-Big Retrieval)</h3>
+    <div class="when">Problem: Small chunks retrieve precisely but lack context; large chunks have context but match poorly.</div>
+    <p>Index small chunks for precise retrieval, but return the larger parent chunk to the LLM for full context.</p>
+<pre><code">from langchain.retrievers import ParentDocumentRetriever
+from langchain.storage import InMemoryStore
+
+# Child chunks (small, for precise retrieval)
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=300)
+
+# Parent chunks (large, for full context)
+parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000)
+
+doc_store = InMemoryStore()
+
+retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=doc_store,
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,
+)
+
+retriever.add_documents(docs)
+# Now: retrieves small chunks → returns large parents to LLM</code></pre>
+  </div>
+
+  <h2>Generation-Side Patterns</h2>
+
+  <div class="pattern-card">
+    <h3>7. Self-RAG</h3>
+    <div class="when">Problem: The model blindly uses retrieved docs even when they're irrelevant — or generates without retrieval when it should retrieve.</div>
+    <p>Self-RAG trains (or prompts) the model to decide: <em>should I retrieve?</em> → retrieve → <em>is this relevant?</em> → use it → <em>is my answer grounded?</em> The model self-critiques at each step.</p>
+<pre><code">def self_rag(query: str, retriever, llm) -> str:
+    # Step 1: Decide if retrieval is needed
+    need_retrieval = llm.invoke(
+        f"Does answering '{query}' require external documents? (yes/no)"
+    ).content.strip().lower()
+
+    if need_retrieval == "no":
+        return llm.invoke(query).content
+
+    # Step 2: Retrieve
+    docs = retriever.invoke(query)
+
+    # Step 3: Grade each retrieved doc for relevance
+    relevant_docs = []
+    for doc in docs:
+        relevance = llm.invoke(
+            f"Is this document relevant to '{query}'? (yes/no)\n\n{doc.page_content[:500]}"
+        ).content.strip().lower()
+        if relevance == "yes":
+            relevant_docs.append(doc)
+
+    if not relevant_docs:
+        return "I couldn't find relevant information to answer this question."
+
+    # Step 4: Generate answer with relevant docs
+    context = "\n\n".join([d.page_content for d in relevant_docs])
+    answer = llm.invoke(f"Context: {context}\n\nQuestion: {query}\nAnswer:").content
+
+    # Step 5: Check for hallucination (grounding check)
+    is_grounded = llm.invoke(
+        f"Is this answer fully supported by the context? (yes/no)\n\nContext: {context}\n\nAnswer: {answer}"
+    ).content.strip().lower()
+
+    if is_grounded == "no":
+        answer = llm.invoke(
+            f"Revise this answer to only include claims supported by:\n{context}\n\nOriginal answer: {answer}"
+        ).content
+
+    return answer</code></pre>
+  </div>
+
+  <div class="pattern-card">
+    <h3>8. GraphRAG (Microsoft)</h3>
+    <div class="when">Problem: Vector search finds locally relevant chunks but misses global relationships and themes across the knowledge base.</div>
+    <p>GraphRAG builds a knowledge graph from documents (entities, relationships, communities) and uses graph traversal + community summarization for queries about themes, relationships, and global patterns.</p>
+<pre><code"># Install: pip install graphrag
+# CLI approach:
+# graphrag index --root ./my_project
+# graphrag query --root ./my_project --method global "What are the main themes?"
+
+# Programmatic approach (simplified)
+import networkx as nx
+
+def build_knowledge_graph(docs, llm):
+    G = nx.Graph()
+
+    for doc in docs:
+        # Extract entities and relationships with LLM
+        extraction_prompt = f"""Extract entities and relationships from this text.
+        Return as JSON: {{"entities": [...], "relationships": [{{from, to, type}}]}}
+        Text: {doc.page_content}"""
+
+        data = json.loads(llm.invoke(extraction_prompt).content)
+
+        for entity in data["entities"]:
+            G.add_node(entity["name"], type=entity["type"])
+
+        for rel in data["relationships"]:
+            G.add_edge(rel["from"], rel["to"], type=rel["type"])
+
+    return G</code></pre>
+    <p><strong>When to use:</strong> Large knowledge bases where you need to answer questions about themes, trends, or cross-document relationships. Not suitable for simple factual lookups.</p>
+  </div>
+
+  <h2>All 15 Advanced RAG Patterns at a Glance</h2>
+  <div class="pattern-grid">
+    <div class="mini-card"><h4>1. HyDE</h4><p>Generate hypothetical answer to improve query-doc alignment</p></div>
+    <div class="mini-card"><h4>2. Query Decomposition</h4><p>Split complex queries into sub-questions</p></div>
+    <div class="mini-card"><h4>3. Step-Back</h4><p>Generalize query to retrieve foundational context</p></div>
+    <div class="mini-card"><h4>4. Hybrid Search</h4><p>Combine keyword BM25 + semantic vector search</p></div>
+    <div class="mini-card"><h4>5. Re-Ranking</h4><p>Cross-encoder second pass for accuracy</p></div>
+    <div class="mini-card"><h4>6. Parent-Child</h4><p>Retrieve small, return large for context</p></div>
+    <div class="mini-card"><h4>7. Self-RAG</h4><p>Model self-critiques retrieval and generation</p></div>
+    <div class="mini-card"><h4>8. GraphRAG</h4><p>Knowledge graph for global reasoning</p></div>
+    <div class="mini-card"><h4>9. RAPTOR</h4><p>Hierarchical clustering + summarization for multi-scale retrieval</p></div>
+    <div class="mini-card"><h4>10. Adaptive RAG</h4><p>Route queries to different strategies based on type</p></div>
+    <div class="mini-card"><h4>11. Corrective RAG</h4><p>Detect poor retrieval, web-search as fallback</p></div>
+    <div class="mini-card"><h4>12. Fusion RAG</h4><p>Generate multiple queries, retrieve all, merge with RRF</p></div>
+    <div class="mini-card"><h4>13. FLARE</h4><p>Active retrieval — retrieve mid-generation when uncertain</p></div>
+    <div class="mini-card"><h4>14. Agentic RAG</h4><p>LLM agent decides when/what to retrieve iteratively</p></div>
+    <div class="mini-card"><h4>15. Contextual Compression</h4><p>LLM extracts only relevant sentences from retrieved chunks</p></div>
+  </div>
+
+  <div class="callout">
+    <strong>Production guidance:</strong> Start with Hybrid Search + Re-Ranking — these give the biggest quality lift for the least complexity. Add HyDE and Query Decomposition next. GraphRAG and Self-RAG are for when you've maxed out simpler approaches and need the extra 5-10%.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>HyDE bridges the query-document vocabulary gap with hypothetical generation</li>
+    <li>Query decomposition enables multi-hop reasoning across documents</li>
+    <li>Hybrid search (BM25 + vectors) consistently beats either alone</li>
+    <li>Re-ranking with cross-encoders adds significant precision at reasonable cost</li>
+    <li>Parent-child chunking balances retrieval precision with answer context</li>
+    <li>Self-RAG adds decision-making and grounding checks at generation time</li>
+    <li>GraphRAG excels for global/thematic queries; overkill for simple lookups</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../intermediate/building-rag-pipeline.html">← Building RAG Pipeline</a>
+    <a class="nav-link" href="../../04-ai-agents/basic/intro-to-ai-agents.html">Next: Intro to AI Agents →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · RAG · Advanced Level</footer>
+</body>
+</html>

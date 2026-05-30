@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding Embeddings & Vector Search — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">Vector Databases</a> › Understanding Embeddings</nav>
+<div class="hero">
+  <span class="badge">🟢 Basic</span>
+  <h1>Understanding Embeddings & Vector Search:<br>The Mathematics of Meaning</h1>
+  <div class="meta"><span>🗃️ Vector Databases</span><span>⏱ 10 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Embeddings are the foundation of modern semantic search, RAG, recommendation systems, and clustering. They're also one of the most elegant ideas in machine learning. This article explains what they are, why they work, and how to use them practically.</p>
+
+  <h2>What is an Embedding?</h2>
+  <p>An embedding is a fixed-size vector of numbers that represents a piece of data (text, image, audio) in a mathematical space where <strong>similar things are close together</strong>.</p>
+  <p>For text, a well-trained embedding model converts "The dog ran fast" into something like <code>[0.12, -0.45, 0.87, ..., 0.33]</code> — a list of 384, 768, or 1536 numbers, depending on the model. The magic: semantically similar sentences produce numerically similar vectors.</p>
+
+  <div class="callout">
+    <strong>The key insight:</strong> Distance in vector space = semantic distance. "Happy" and "joyful" are closer to each other than "happy" and "melancholy." This lets us find semantically similar content without any keyword matching.
+  </div>
+
+  <h2>The Famous Word2Vec Analogy</h2>
+  <p>Early embedding models demonstrated remarkable algebraic properties:</p>
+  <ul>
+    <li>embedding("king") − embedding("man") + embedding("woman") ≈ embedding("queen")</li>
+    <li>embedding("Paris") − embedding("France") + embedding("Italy") ≈ embedding("Rome")</li>
+    <li>embedding("walking") − embedding("walk") ≈ embedding("swimming") − embedding("swim")</li>
+  </ul>
+  <p>These relationships emerge from the statistical co-occurrence patterns in the training data — the model learns that "king" and "queen" appear in similar contexts, just with different gendered words nearby.</p>
+
+  <h2>How Embedding Models Work</h2>
+  <p>Modern text embedding models use Transformer encoders (like BERT). The model processes the input text and outputs a dense vector that captures its semantic meaning in a high-dimensional space.</p>
+<pre><code">from sentence_transformers import SentenceTransformer
+import numpy as np
+
+# Load a pre-trained embedding model
+model = SentenceTransformer("BAAI/bge-small-en-v1.5")  # 33M params, free, fast
+
+# Embed a sentence
+sentence = "The quick brown fox jumps over the lazy dog"
+embedding = model.encode(sentence)
+
+print(f"Shape: {embedding.shape}")       # (384,) — 384 dimensions
+print(f"Type: {embedding.dtype}")        # float32
+print(f"First 5 values: {embedding[:5]}")  # [-0.12, 0.45, 0.03, ...]
+
+# Embed multiple sentences at once (batched for speed)
+sentences = [
+    "I love cats.",
+    "My favorite animal is a cat.",
+    "I'm learning Python programming.",
+    "The stock market fell today.",
+]
+embeddings = model.encode(sentences, batch_size=32)
+print(f"Shape: {embeddings.shape}")  # (4, 384)</code></pre>
+
+  <h2>Measuring Similarity: Cosine Similarity</h2>
+  <p>The most common similarity metric is <strong>cosine similarity</strong> — it measures the angle between two vectors, ignoring their magnitude. A score of 1 means identical direction (same meaning), 0 means orthogonal (unrelated), -1 means opposite.</p>
+<pre><code">from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+sentences = [
+    "I love cats.",                         # Reference
+    "My favorite animal is a cat.",          # Should be high similarity
+    "Dogs are great pets.",                  # Medium similarity
+    "The economy is growing rapidly.",       # Should be low similarity
+]
+
+embeddings = model.encode(sentences)
+
+# Compare all to the first sentence
+reference = embeddings[0].reshape(1, -1)
+similarities = cosine_similarity(reference, embeddings[1:])
+
+for sent, score in zip(sentences[1:], similarities[0]):
+    print(f"{score:.3f} | {sent}")
+
+# Output:
+# 0.923 | My favorite animal is a cat.     ← Very similar
+# 0.687 | Dogs are great pets.             ← Moderately similar
+# 0.143 | The economy is growing rapidly.  ← Unrelated</code></pre>
+
+  <h2>Building a Simple Semantic Search System</h2>
+<pre><code">import numpy as np
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+
+# Your knowledge base
+documents = [
+    "Return policy: Items can be returned within 30 days for a full refund.",
+    "Shipping: We offer free shipping on orders over $50.",
+    "Payment: We accept Visa, Mastercard, PayPal, and Apple Pay.",
+    "Customer service is available Monday-Friday 9am-6pm EST.",
+    "Our premium membership costs $9.99/month and includes free returns.",
+]
+
+# Embed all documents (do this once, store the result)
+doc_embeddings = model.encode(documents, normalize_embeddings=True)
+
+def semantic_search(query: str, top_k: int = 3) -> list[dict]:
+    """Find the most relevant documents for a query."""
+    query_embedding = model.encode([query], normalize_embeddings=True)
+    scores = (query_embedding @ doc_embeddings.T)[0]  # Dot product = cosine sim
+    top_indices = np.argsort(scores)[::-1][:top_k]
+    return [
+        {"document": documents[i], "score": float(scores[i])}
+        for i in top_indices
+    ]
+
+# Test it
+results = semantic_search("How do I send something back?")
+for r in results:
+    print(f"Score: {r['score']:.3f} | {r['document'][:80]}")</code></pre>
+
+  <h2>Choosing an Embedding Model</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>BAAI/bge-small-en</h4>
+      <p>🟢 Free, 33M params, 384 dims. Fast and good quality. Best for local/offline use.</p>
+    </div>
+    <div class="card">
+      <h4>text-embedding-3-small</h4>
+      <p>OpenAI. $0.02/1M tokens. 1536 dims. Excellent quality. Best balance of cost and performance.</p>
+    </div>
+    <div class="card">
+      <h4>text-embedding-3-large</h4>
+      <p>OpenAI. $0.13/1M tokens. 3072 dims. Highest quality from OpenAI.</p>
+    </div>
+    <div class="card">
+      <h4>voyage-3</h4>
+      <p>Anthropic/Voyage AI. Best performing model for RAG tasks in most benchmarks (MTEB).</p>
+    </div>
+  </div>
+
+  <h2>Embeddings Beyond Text</h2>
+  <ul>
+    <li><strong>Images:</strong> CLIP embeddings allow text and image search in the same vector space</li>
+    <li><strong>Code:</strong> CodeBERT, StarCoder embeddings for semantic code search</li>
+    <li><strong>Audio:</strong> Whisper + sentence embeddings for audio search</li>
+    <li><strong>Multi-modal:</strong> Models like GPT-4V can embed text+image pairs together</li>
+  </ul>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>Embeddings are fixed-size vectors where similar content = similar vectors</li>
+    <li>Cosine similarity measures semantic similarity between any two embeddings</li>
+    <li>Use <code>normalize_embeddings=True</code> — enables faster dot product instead of cosine calculation</li>
+    <li>BAAI/bge-small-en-v1.5 for free/local; OpenAI text-embedding-3-small for production quality</li>
+    <li>Always embed with the same model you indexed with — models are not interchangeable</li>
+    <li>Embeddings are the engine behind semantic search, RAG, recommendations, and clustering</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../05-langchain-langgraph/advanced/stateful-agents-langgraph.html">← LangGraph</a>
+    <a class="nav-link" href="../intermediate/choosing-vector-database.html">Next: Choosing a Vector DB →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · Vector Databases · Basic Level</footer>
+</body>
+</html>

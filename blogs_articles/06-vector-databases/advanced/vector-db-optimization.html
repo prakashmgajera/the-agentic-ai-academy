@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vector DB Optimization at Scale — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">Vector Databases</a> › Optimization at Scale</nav>
+<div class="hero">
+  <span class="badge">🔴 Advanced</span>
+  <h1>Vector Database Optimization at Scale:<br>ANN Indexes, Quantization & Production Tuning</h1>
+  <div class="meta"><span>🗃️ Vector Databases</span><span>⏱ 18 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>As your vector database grows from thousands to millions or billions of vectors, naive approaches break down. This guide covers the indexing algorithms, quantization techniques, and operational practices that make production vector search fast, accurate, and cost-effective at scale.</p>
+
+  <h2>The Core Challenge: ANN vs Exact Search</h2>
+  <p>Exact nearest neighbor search requires comparing the query vector against every stored vector — O(n) time. With 1 billion vectors of 1536 dimensions, this is computationally infeasible in real time. <strong>Approximate Nearest Neighbor (ANN)</strong> search trades a small accuracy loss for orders-of-magnitude speedup.</p>
+
+  <h2>ANN Index Algorithms</h2>
+  <h3>HNSW (Hierarchical Navigable Small World)</h3>
+  <p>The dominant ANN algorithm in most vector databases. Builds a hierarchical graph where nodes have connections to nearby neighbors. Search traverses from coarse (top layer) to fine (bottom layer).</p>
+<pre><code"># HNSW parameters (using hnswlib directly)
+import hnswlib
+import numpy as np
+
+dim = 1536
+num_elements = 1_000_000
+
+# Create index — key parameters:
+# M: number of connections per node (higher = better recall, more memory)
+# ef_construction: search breadth during indexing (higher = better index, slower build)
+index = hnswlib.Index(space='cosine', dim=dim)
+index.init_index(
+    max_elements=num_elements,
+    ef_construction=200,   # Build quality. 200 is a good starting point.
+    M=16                   # Connections per node. 16-64 typical range.
+)
+
+# Add elements
+index.add_items(embeddings, ids=np.arange(num_elements), num_threads=8)
+
+# Query — ef controls search accuracy (higher = better recall, slower)
+index.set_ef(100)  # Must be >= k
+labels, distances = index.knn_query(query_vector, k=10)
+
+# Save/load index
+index.save_index("my_index.bin")
+loaded = hnswlib.Index(space='cosine', dim=dim)
+loaded.load_index("my_index.bin", max_elements=num_elements)</code></pre>
+
+  <h3>HNSW Parameter Tuning Guide</h3>
+  <ul>
+    <li><strong>M=16:</strong> Good default. Increase to 32-64 for higher recall at cost of more memory</li>
+    <li><strong>ef_construction=200:</strong> Good default. Increase to 400+ for highest recall builds</li>
+    <li><strong>ef (query time)=100:</strong> Start here. Tune until recall@10 &gt; 0.95 in your benchmarks</li>
+    <li><strong>Memory:</strong> ≈ (M × 2 × 4 bytes) × num_elements for the graph structure alone</li>
+  </ul>
+
+  <h3>IVF (Inverted File Index)</h3>
+  <p>IVF clusters vectors into nlist centroids using k-means, then at query time searches only the nearest nprobe clusters. Uses less memory than HNSW but lower recall at equivalent query time.</p>
+<pre><code"># FAISS with IVF index
+import faiss
+
+dim = 1536
+nlist = 1000    # Number of clusters (sqrt(n) is a good starting point)
+nprobe = 50     # Clusters to search at query time (higher = better recall, slower)
+
+# Train on a representative sample
+quantizer = faiss.IndexFlatIP(dim)   # Exact search for centroid finding
+index = faiss.IndexIVFFlat(quantizer, dim, nlist, faiss.METRIC_INNER_PRODUCT)
+index.train(training_vectors)         # Must train before adding!
+index.add(all_vectors)
+
+# Query
+index.nprobe = nprobe
+distances, indices = index.search(query_vectors, k=10)</code></pre>
+
+  <h2>Quantization: Reducing Memory 4–32×</h2>
+  <p>Full float32 vectors use 4 bytes × dimension = 6KB per 1536-dim vector. At 100M vectors, that's 600GB. Quantization compresses vectors with minimal accuracy loss.</p>
+
+  <h3>Scalar Quantization (SQ): 4× compression</h3>
+<pre><code"># float32 → int8 quantization (4× memory reduction)
+import faiss
+
+dim = 1536
+sq_index = faiss.IndexScalarQuantizer(
+    dim,
+    faiss.ScalarQuantizer.QT_8bit,  # 8-bit = 4× reduction
+    faiss.METRIC_INNER_PRODUCT
+)
+sq_index.train(training_vectors)
+sq_index.add(all_vectors)
+# Query is identical to regular index</code></pre>
+
+  <h3>Product Quantization (PQ): 8–32× compression</h3>
+<pre><code"># Product Quantization — highest compression
+dim = 1536
+M = 96      # Number of sub-quantizers (dim must be divisible by M)
+nbits = 8   # Bits per sub-quantizer (8 bits = 256 centroids)
+
+pq_index = faiss.IndexPQ(dim, M, nbits)
+pq_index.train(training_vectors)
+pq_index.add(all_vectors)
+
+# Or combine HNSW + PQ for best of both worlds:
+hnsw_pq = faiss.IndexHNSWPQ(dim, M, 32, nbits)  # M PQ segments, 32 HNSW neighbors</code></pre>
+
+  <h3>Matryoshka Embeddings (MRL)</h3>
+  <p>Modern embedding models (OpenAI text-embedding-3, Voyage AI) support Matryoshka Representation Learning — you can truncate the embedding to a shorter dimension while preserving most quality. This lets you choose the precision-vs-cost tradeoff at query time.</p>
+<pre><code"># Using truncated OpenAI embeddings (MRL)
+from openai import OpenAI
+client = OpenAI()
+
+# Full 1536-dim embedding: $0.13/1M tokens
+full_response = client.embeddings.create(
+    input="Sample text",
+    model="text-embedding-3-large"
+)
+full_embedding = full_response.data[0].embedding  # 1536 dims
+
+# Truncated 256-dim embedding: same cost, 6× less storage, ~95% quality
+# Just take the first 256 dimensions and re-normalize
+import numpy as np
+truncated = np.array(full_embedding[:256])
+truncated = truncated / np.linalg.norm(truncated)  # Renormalize</code></pre>
+
+  <h2>Incremental Indexing & Updates</h2>
+<pre><code"># Problem: HNSW doesn't support deletion well. Use soft deletes.
+
+class VectorStore:
+    def __init__(self):
+        self.index = hnswlib.Index(space='cosine', dim=1536)
+        self.deleted_ids = set()
+        self.metadata = {}
+
+    def add(self, vectors, ids, metadata):
+        self.index.add_items(vectors, ids)
+        for id_, meta in zip(ids, metadata):
+            self.metadata[id_] = meta
+
+    def delete(self, id_):
+        """Soft delete — mark as deleted, filter at query time"""
+        self.deleted_ids.add(id_)
+
+    def search(self, query_vector, k=10) -> list:
+        # Fetch more than needed to account for deleted items
+        k_fetch = k + len(self.deleted_ids)
+        labels, distances = self.index.knn_query(query_vector, k=min(k_fetch, 100))
+
+        results = []
+        for label, distance in zip(labels[0], distances[0]):
+            if label not in self.deleted_ids:
+                results.append({
+                    "id": label,
+                    "score": 1 - distance,
+                    "metadata": self.metadata[label]
+                })
+            if len(results) == k:
+                break
+        return results
+
+    def rebuild_index(self):
+        """Periodic full rebuild to clean up deleted items"""
+        active_ids = [id_ for id_ in self.metadata if id_ not in self.deleted_ids]
+        # Re-index only active vectors
+        ...</code></pre>
+
+  <h2>Benchmarking Your Vector DB</h2>
+<pre><code"># Measure recall@k and latency
+import time
+import numpy as np
+
+def benchmark_ann_index(index, true_neighbors, query_vectors, k=10):
+    """Measure recall and latency of ANN search."""
+    latencies = []
+    recalls = []
+
+    for i, query in enumerate(query_vectors):
+        start = time.perf_counter()
+        predicted, _ = index.knn_query(query.reshape(1, -1), k=k)
+        latency = (time.perf_counter() - start) * 1000  # ms
+        latencies.append(latency)
+
+        # Recall@k = fraction of true top-k found in predicted top-k
+        true_top_k = set(true_neighbors[i][:k])
+        predicted_top_k = set(predicted[0])
+        recall = len(true_top_k & predicted_top_k) / k
+        recalls.append(recall)
+
+    print(f"Mean latency: {np.mean(latencies):.2f}ms (p99: {np.percentile(latencies, 99):.2f}ms)")
+    print(f"Mean recall@{k}: {np.mean(recalls):.3f}")
+    print(f"Throughput: {1000/np.mean(latencies):.0f} QPS")</code></pre>
+
+  <h2>Production Operational Practices</h2>
+  <ul>
+    <li><strong>Namespaces/Tenants:</strong> Isolate each customer's vectors — prevents cross-tenant contamination and simplifies data deletion (GDPR)</li>
+    <li><strong>Warm-up:</strong> After loading an index, run 100 dummy queries before serving traffic — cold-start latency can be 10× worse</li>
+    <li><strong>Index in RAM:</strong> Keep your entire HNSW index in memory. Disk-resident indexes are 10–100× slower</li>
+    <li><strong>Batch upserts:</strong> Insert in batches of 100–1000 rather than one at a time — reduces overhead by 10-50×</li>
+    <li><strong>Monitor recall:</strong> Run nightly offline recall benchmarks against your ground truth. Recall can degrade as your data distribution shifts</li>
+    <li><strong>Set metadata limits:</strong> Large metadata payloads increase storage and slow queries — store only what you filter on in the vector DB; fetch full data from a relational DB</li>
+  </ul>
+
+  <div class="callout">
+    <strong>The optimization priority order:</strong> First, fix your chunking and embedding quality (biggest impact). Second, tune ef/M parameters (recall vs latency tradeoff). Third, apply quantization (cost reduction). Only then optimize operational infrastructure. Most teams optimize in the wrong order.
+  </div>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../intermediate/choosing-vector-database.html">← Choosing a Vector DB</a>
+    <a class="nav-link" href="../../07-ai-engineering-tools/intermediate/model-context-protocol.html">Next: Model Context Protocol →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · Vector Databases · Advanced Level</footer>
+</body>
+</html>

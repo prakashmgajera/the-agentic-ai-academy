@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is Artificial Intelligence? — The Agentic AI Academy</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d2e; --border: #2a2d3e;
+    --primary: #6366f1; --primary-light: #818cf8;
+    --green: #22c55e; --yellow: #eab308; --red: #ef4444;
+    --text: #e2e8f0; --muted: #94a3b8; --code-bg: #0d1117;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  a { color: var(--primary-light); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--muted); }
+  nav a { color: var(--muted); } nav a:hover { color: var(--text); }
+  .hero { background: linear-gradient(135deg, #1a1d2e 0%, #0f1117 100%); border-bottom: 1px solid var(--border); padding: 3rem 2rem; max-width: 860px; margin: 0 auto; }
+  .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); margin-bottom: 1rem; }
+  .meta { display: flex; gap: 1.5rem; color: var(--muted); font-size: 0.875rem; margin-top: 1rem; flex-wrap: wrap; }
+  h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+  .content { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem; }
+  h2 { font-size: 1.5rem; font-weight: 600; margin: 2.5rem 0 1rem; color: var(--primary-light); border-left: 3px solid var(--primary); padding-left: 0.75rem; }
+  h3 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+  p { margin-bottom: 1rem; color: #cbd5e1; }
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; color: #cbd5e1; }
+  li { margin-bottom: 0.4rem; }
+  code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.875em; color: #a78bfa; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; overflow-x: auto; margin: 1rem 0 1.5rem; }
+  pre code { background: none; border: none; padding: 0; color: #e2e8f0; font-size: 0.875rem; }
+  .callout { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); border-radius: 8px; padding: 1rem 1.25rem; margin: 1.5rem 0; }
+  .callout strong { color: var(--primary-light); }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+  .card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-light); }
+  .card p { font-size: 0.875rem; margin: 0; }
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; color: var(--muted); font-size: 0.875rem; max-width: 860px; margin: 0 auto; }
+  .nav-links { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 1rem; }
+  .nav-link { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.875rem; color: var(--muted); transition: border-color 0.2s; }
+  .nav-link:hover { border-color: var(--primary); color: var(--text); text-decoration: none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="../../index.html">🏠 Home</a> › <a href="#">AI Foundations</a> › What is AI?
+</nav>
+
+<div class="hero">
+  <span class="badge">🟢 Basic</span>
+  <h1>What is Artificial Intelligence?<br>A Beginner's Complete Guide</h1>
+  <div class="meta">
+    <span>📚 AI Foundations</span>
+    <span>⏱ 8 min read</span>
+    <span>🗓 May 2026</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <p>Artificial Intelligence (AI) is one of the most transformative technologies of our era — yet it's also one of the most misunderstood. From science fiction robots to the chatbots you use today, AI has taken many forms. In this guide, we'll cut through the hype and explain exactly what AI is, how it works, and why it matters.</p>
+
+  <h2>What is AI, Really?</h2>
+  <p>At its core, <strong>Artificial Intelligence</strong> is the ability of a computer system to perform tasks that typically require human intelligence. These tasks include understanding language, recognizing images, making decisions, translating speech, and writing code.</p>
+  <p>The formal definition from John McCarthy — who coined the term in 1956 — is: <em>"The science and engineering of making intelligent machines."</em></p>
+
+  <div class="callout">
+    <strong>Key insight:</strong> AI is not a single technology. It's an umbrella term for a collection of techniques, algorithms, and approaches that give computers human-like capabilities.
+  </div>
+
+  <h2>The AI Family Tree</h2>
+  <p>AI encompasses several sub-fields, each building on the last:</p>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Artificial Intelligence</h4>
+      <p>The broadest category. Any technique that lets machines mimic human intelligence.</p>
+    </div>
+    <div class="card">
+      <h4>Machine Learning</h4>
+      <p>A subset of AI. Systems that <em>learn from data</em> without being explicitly programmed.</p>
+    </div>
+    <div class="card">
+      <h4>Deep Learning</h4>
+      <p>A subset of ML using neural networks with many layers — powers most modern AI.</p>
+    </div>
+    <div class="card">
+      <h4>Generative AI</h4>
+      <p>Systems that can <em>create</em> new content: text, images, audio, code, and video.</p>
+    </div>
+  </div>
+
+  <h2>A Brief History of AI</h2>
+  <ul>
+    <li><strong>1950</strong> — Alan Turing proposes the "Turing Test" to measure machine intelligence</li>
+    <li><strong>1956</strong> — John McCarthy coins "Artificial Intelligence" at the Dartmouth Conference</li>
+    <li><strong>1980s</strong> — Expert systems dominate; rule-based AI in business applications</li>
+    <li><strong>1997</strong> — IBM's Deep Blue beats world chess champion Garry Kasparov</li>
+    <li><strong>2012</strong> — AlexNet wins ImageNet, deep learning revolution begins</li>
+    <li><strong>2017</strong> — Google publishes "Attention Is All You Need" — the Transformer paper</li>
+    <li><strong>2020</strong> — GPT-3 demonstrates remarkable language abilities with 175B parameters</li>
+    <li><strong>2022</strong> — ChatGPT launches; AI enters mainstream consciousness</li>
+    <li><strong>2024–2026</strong> — Agentic AI: systems that autonomously plan, reason, and act</li>
+  </ul>
+
+  <h2>Types of AI by Capability</h2>
+  <h3>Narrow AI (ANI) — What exists today</h3>
+  <p>Narrow AI is designed to do <em>one specific task</em> extremely well. Examples include spam filters, recommendation engines, face recognition, and language models like Claude or GPT-4. These systems can outperform humans at their specific task but cannot generalize.</p>
+
+  <h3>General AI (AGI) — The goal</h3>
+  <p>Artificial General Intelligence would be able to learn and perform any intellectual task a human can do. It doesn't exist yet, though debate rages about how close we are. Most researchers believe we're still years or decades away.</p>
+
+  <h3>Super AI (ASI) — The hypothetical future</h3>
+  <p>A superintelligent AI would surpass human intelligence across all domains. This remains theoretical and raises profound philosophical and ethical questions.</p>
+
+  <h2>How Does AI Learn?</h2>
+  <p>Modern AI systems learn through <strong>training</strong> — a process of feeding the system massive amounts of data and adjusting its internal parameters to minimize errors. Think of it like teaching a student: show them thousands of examples, correct their mistakes, and eventually they develop intuition.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Supervised Learning</h4>
+      <p>Learns from labeled examples (input → correct output). Used in spam detection, image classification.</p>
+    </div>
+    <div class="card">
+      <h4>Unsupervised Learning</h4>
+      <p>Finds patterns in unlabeled data on its own. Used in clustering, anomaly detection.</p>
+    </div>
+    <div class="card">
+      <h4>Reinforcement Learning</h4>
+      <p>Learns by trial and error with rewards/penalties. Used in game playing, robotics.</p>
+    </div>
+  </div>
+
+  <h2>Real-World AI Applications</h2>
+  <ul>
+    <li><strong>Healthcare:</strong> Diagnosing cancer from medical images, drug discovery acceleration</li>
+    <li><strong>Finance:</strong> Fraud detection, algorithmic trading, credit scoring</li>
+    <li><strong>Transportation:</strong> Self-driving cars, route optimization, traffic prediction</li>
+    <li><strong>Customer Service:</strong> Chatbots, virtual assistants, sentiment analysis</li>
+    <li><strong>Creative Work:</strong> Generating images, writing code, composing music</li>
+    <li><strong>Science:</strong> Protein folding (AlphaFold), climate modeling, materials discovery</li>
+  </ul>
+
+  <h2>Why AI Matters Now</h2>
+  <p>We are living through an inflection point. AI is transitioning from a specialized research topic to a general-purpose technology — like electricity or the internet — that will permeate every industry and profession.</p>
+  <p>The rise of <strong>Large Language Models (LLMs)</strong> and <strong>AI Agents</strong> means that AI can now read, write, reason, use tools, and execute multi-step tasks autonomously. This isn't just automation — it's a new kind of intelligence that augments human capability.</p>
+
+  <div class="callout">
+    <strong>The bottom line:</strong> Understanding AI is no longer optional for knowledge workers. Whether you're in business, healthcare, education, or engineering, AI will reshape how you work. This academy is your guide to mastering it.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>AI is the broad field of making computers perform human-like tasks</li>
+    <li>Machine Learning and Deep Learning are sub-fields that power modern AI</li>
+    <li>Today's AI is "Narrow AI" — excellent at specific tasks, not general reasoning</li>
+    <li>AI learns from data through training processes like supervised/reinforcement learning</li>
+    <li>AI is becoming a foundational technology impacting every sector</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../../index.html">← Back to All Articles</a>
+    <a class="nav-link" href="ml-vs-dl.html">Next: ML vs Deep Learning →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Foundations · Basic Level</footer>
+</body>
+</html>

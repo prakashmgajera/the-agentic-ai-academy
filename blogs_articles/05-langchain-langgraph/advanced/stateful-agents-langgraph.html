@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stateful Agents with LangGraph — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">LangChain & LangGraph</a> › Stateful Agents with LangGraph</nav>
+<div class="hero">
+  <span class="badge">🔴 Advanced</span>
+  <h1>Stateful AI Agents with LangGraph:<br>Graphs, State, Checkpointing & Human-in-the-Loop</h1>
+  <div class="meta"><span>⛓️ LangGraph</span><span>⏱ 19 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>LangGraph extends LangChain with a graph-based execution model that gives you stateful, multi-step agents with persistent memory, conditional branching, cycles, and human-in-the-loop checkpointing. It's the production-grade choice for complex agentic workflows.</p>
+
+  <h2>Why LangGraph? The Key Advantages</h2>
+  <ul>
+    <li><strong>Stateful:</strong> State persists across steps and can be inspected/modified at any point</li>
+    <li><strong>Cycles:</strong> Unlike DAG-only frameworks, LangGraph supports loops (agent thinks, acts, thinks again)</li>
+    <li><strong>Interrupts:</strong> Pause execution at any node for human approval, then resume</li>
+    <li><strong>Persistence:</strong> Save and restore state across sessions using checkpointers</li>
+    <li><strong>Streaming:</strong> Stream state updates, LLM tokens, and tool calls in real time</li>
+  </ul>
+
+  <h2>Core Concepts: Nodes, Edges & State</h2>
+<pre><code">from typing import TypedDict, Annotated, List
+from langgraph.graph import StateGraph, START, END
+from langgraph.prebuilt import ToolNode, tools_condition
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.tools import tool
+import operator
+
+# 1. Define the State — shared across all nodes
+class AgentState(TypedDict):
+    messages: Annotated[List[BaseMessage], operator.add]  # append-only list
+    iteration_count: int
+    final_answer: str | None
+
+# 2. Define Tools
+@tool
+def search_web(query: str) -> str:
+    """Search the web for information."""
+    return f"Web results for '{query}': [simulated results]"
+
+@tool
+def run_code(code: str) -> str:
+    """Execute Python code and return the output."""
+    try:
+        import io, contextlib
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            exec(code, {})
+        return output.getvalue() or "Code executed successfully (no output)"
+    except Exception as e:
+        return f"Error: {e}"
+
+tools = [search_web, run_code]
+llm = ChatAnthropic(model="claude-opus-4-6").bind_tools(tools)
+
+# 3. Define Nodes (functions that transform state)
+def agent_node(state: AgentState) -> dict:
+    """Main reasoning node"""
+    response = llm.invoke(state["messages"])
+    return {
+        "messages": [response],
+        "iteration_count": state.get("iteration_count", 0) + 1
+    }
+
+def check_completion(state: AgentState) -> str:
+    """Router: decide whether to use tools or finish"""
+    last_message = state["messages"][-1]
+
+    # Check if we've used a tool
+    if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+        return "tools"
+
+    # Check iteration limit
+    if state.get("iteration_count", 0) >= 10:
+        return "force_end"
+
+    return "end"
+
+# 4. Build the Graph
+workflow = StateGraph(AgentState)
+
+# Add nodes
+workflow.add_node("agent", agent_node)
+workflow.add_node("tools", ToolNode(tools))  # Pre-built tool executor
+
+# Add edges
+workflow.add_edge(START, "agent")
+workflow.add_conditional_edges(
+    "agent",
+    check_completion,
+    {
+        "tools": "tools",      # Use tool → go to tool node
+        "end": END,             # Done → finish
+        "force_end": END        # Max iterations → finish
+    }
+)
+workflow.add_edge("tools", "agent")  # After tool use → back to agent
+
+# Compile
+app = workflow.compile()
+
+# Run
+result = app.invoke({
+    "messages": [HumanMessage(content="Search for the latest Claude model and write code to call it")],
+    "iteration_count": 0,
+    "final_answer": None
+})
+print(result["messages"][-1].content)</code></pre>
+
+  <h2>Checkpointing & Persistence</h2>
+<pre><code">from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+
+# In-memory checkpointer (development)
+memory = MemorySaver()
+app = workflow.compile(checkpointer=memory)
+
+# PostgreSQL checkpointer (production — survives restarts)
+async def setup_production_app():
+    async with AsyncPostgresSaver.from_conn_string(
+        "postgresql://user:password@localhost:5432/langgraph"
+    ) as checkpointer:
+        await checkpointer.setup()  # Create tables
+        app = workflow.compile(checkpointer=checkpointer)
+        return app
+
+# Thread IDs enable separate conversation contexts
+config_user1 = {"configurable": {"thread_id": "user-alice-session-1"}}
+config_user2 = {"configurable": {"thread_id": "user-bob-session-1"}}
+
+# Each thread maintains its own state independently
+result_alice = await app.ainvoke(
+    {"messages": [HumanMessage(content="What is 2+2?")]},
+    config=config_user1
+)
+
+# Resume a thread — it remembers all previous messages
+result_alice_followup = await app.ainvoke(
+    {"messages": [HumanMessage(content="Double the result")]},
+    config=config_user1  # Same thread = same conversation history
+)</code></pre>
+
+  <h2>Human-in-the-Loop: Interrupts & Approval Gates</h2>
+<pre><code">from langgraph.graph import StateGraph, END
+
+class WorkflowState(TypedDict):
+    messages: Annotated[List[BaseMessage], operator.add]
+    pending_action: dict | None
+    approved: bool
+
+def plan_action(state: WorkflowState) -> dict:
+    """Agent plans what action to take"""
+    action = {"type": "send_email", "to": "team@company.com", "body": "..."}
+    return {"pending_action": action}
+
+def execute_action(state: WorkflowState) -> dict:
+    """Execute the approved action"""
+    if not state.get("approved"):
+        return {"messages": [AIMessage(content="Action was not approved.")]}
+
+    action = state["pending_action"]
+    # Actually execute the action here
+    return {"messages": [AIMessage(content=f"Executed: {action['type']}")]}
+
+workflow = StateGraph(WorkflowState)
+workflow.add_node("plan", plan_action)
+workflow.add_node("execute", execute_action)
+workflow.add_edge(START, "plan")
+workflow.add_edge("plan", "execute")
+workflow.add_edge("execute", END)
+
+# Compile with interrupt BEFORE execute node
+app = workflow.compile(
+    checkpointer=MemorySaver(),
+    interrupt_before=["execute"]  # Pause here for human review
+)
+
+config = {"configurable": {"thread_id": "approval-flow-1"}}
+
+# Step 1: Run until interruption
+state = app.invoke(
+    {"messages": [HumanMessage(content="Send a status update email")]},
+    config=config
+)
+
+# Step 2: Inspect what the agent wants to do
+current_state = app.get_state(config)
+pending = current_state.values.get("pending_action")
+print(f"Agent wants to: {pending}")  # Show to human
+
+# Step 3: Human decides
+human_approved = True  # (get from UI/Slack/etc.)
+
+# Step 4: Update state and resume
+app.update_state(config, {"approved": human_approved})
+final_state = app.invoke(None, config=config)  # Resume from checkpoint</code></pre>
+
+  <h2>Streaming for Real-Time UX</h2>
+<pre><code">async def stream_agent_response(user_message: str):
+    """Stream all state updates, LLM tokens, and tool calls."""
+    config = {"configurable": {"thread_id": "stream-example"}}
+
+    async for event in app.astream_events(
+        {"messages": [HumanMessage(content=user_message)]},
+        config=config,
+        version="v2"
+    ):
+        kind = event["event"]
+
+        if kind == "on_chat_model_stream":
+            # Stream LLM tokens in real time
+            token = event["data"]["chunk"].content
+            if token:
+                print(token, end="", flush=True)
+
+        elif kind == "on_tool_start":
+            # Tool is being called
+            tool_name = event["name"]
+            print(f"\n[Using tool: {tool_name}...]")
+
+        elif kind == "on_tool_end":
+            # Tool returned result
+            result = event["data"]["output"]
+            print(f"[Tool result: {str(result)[:100]}]")
+
+# Run it
+import asyncio
+asyncio.run(stream_agent_response("Search for LangGraph news and summarize"))</code></pre>
+
+  <h2>Subgraphs for Complex Workflows</h2>
+<pre><code">"""Subgraphs allow you to nest graph logic — great for reusable agent components"""
+
+# Define a research sub-graph
+research_workflow = StateGraph(AgentState)
+research_workflow.add_node("search", search_node)
+research_workflow.add_node("summarize", summarize_node)
+research_workflow.add_edge(START, "search")
+research_workflow.add_edge("search", "summarize")
+research_workflow.add_edge("summarize", END)
+research_app = research_workflow.compile()
+
+# Use it as a node in the main graph
+def research_node(state):
+    """Invoke the research subgraph"""
+    result = research_app.invoke(state)
+    return result
+
+main_workflow = StateGraph(AgentState)
+main_workflow.add_node("research", research_node)   # Subgraph as node
+main_workflow.add_node("write", write_node)
+main_workflow.add_edge(START, "research")
+main_workflow.add_edge("research", "write")
+main_workflow.add_edge("write", END)</code></pre>
+
+  <div class="callout">
+    <strong>When to reach for LangGraph:</strong> Use it when you need (1) cycles in your workflow, (2) persistent state across sessions, (3) human approval gates, (4) complex conditional branching, or (5) you're building a product (not a prototype). For simple linear chains, plain LCEL is sufficient.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>LangGraph models workflows as stateful graphs with typed state, nodes, and edges</li>
+    <li><code>Annotated[list, operator.add]</code> creates append-only state — the right pattern for message history</li>
+    <li>Checkpointers persist state to memory/DB — enables multi-session conversations</li>
+    <li>Thread IDs isolate separate user sessions in the same graph</li>
+    <li><code>interrupt_before</code> pauses execution for human review — essential for production agents</li>
+    <li><code>astream_events</code> enables real-time streaming of tokens, tool calls, and state updates</li>
+    <li>Subgraphs allow you to compose complex workflows from reusable components</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../intermediate/getting-started-langchain.html">← LangChain Basics</a>
+    <a class="nav-link" href="../../06-vector-databases/basic/understanding-embeddings.html">Next: Understanding Embeddings →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · LangChain & LangGraph · Advanced Level</footer>
+</body>
+</html>

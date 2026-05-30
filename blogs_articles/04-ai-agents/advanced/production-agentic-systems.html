@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production Agentic Systems — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .pillar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;}
+  .pillar h3{color:var(--primary-light);margin-top:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">AI Agents</a> › Production Agentic Systems</nav>
+<div class="hero">
+  <span class="badge">🔴 Advanced</span>
+  <h1>Production Agentic Systems:<br>Architecture, Reliability & Observability</h1>
+  <div class="meta"><span>🤖 AI Agents</span><span>⏱ 20 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Building a demo agent is easy. Building an agent system that handles millions of requests reliably, fails gracefully, costs predictably, and can be debugged when things go wrong — that's an engineering challenge. This guide covers what separates production systems from demos.</p>
+
+  <h2>The 5 Pillars of Production Agent Systems</h2>
+
+  <div class="pillar">
+    <h3>Pillar 1: Reliability & Error Handling</h3>
+    <p>Agents fail in unexpected ways — tools return errors, the LLM loops infinitely, external APIs go down. Production systems need robust error handling at every level.</p>
+<pre><code">import asyncio
+from tenacity import retry, stop_after_attempt, wait_exponential
+from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
+
+class ProductionAgent:
+    def __init__(self, llm, tools, max_iterations=20):
+        self.llm = llm
+        self.tools = tools
+        self.max_iterations = max_iterations
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=30),
+        reraise=True
+    )
+    async def call_llm_with_retry(self, messages: list) -> str:
+        """LLM calls with exponential backoff retry"""
+        try:
+            response = await self.llm.ainvoke(messages)
+            return response
+        except Exception as e:
+            logger.error(f"LLM call failed: {e}")
+            raise
+
+    async def execute_tool_safely(self, tool_name: str, args: dict) -> str:
+        """Execute tool with timeout and error handling"""
+        if tool_name not in self.tools:
+            return f"Error: Unknown tool '{tool_name}'"
+
+        try:
+            # Timeout after 30 seconds per tool call
+            result = await asyncio.wait_for(
+                self.tools[tool_name](**args),
+                timeout=30.0
+            )
+            return str(result)
+        except asyncio.TimeoutError:
+            logger.warning(f"Tool {tool_name} timed out")
+            return f"Error: Tool '{tool_name}' timed out after 30s"
+        except Exception as e:
+            logger.error(f"Tool {tool_name} failed: {e}")
+            return f"Error: Tool '{tool_name}' failed: {str(e)[:200]}"
+
+    async def run(self, goal: str, run_id: str) -> dict:
+        """Main agent loop with iteration guard and structured output"""
+        messages = [{"role": "user", "content": goal}]
+        tool_calls_made = []
+
+        for iteration in range(self.max_iterations):
+            logger.info(f"[{run_id}] Iteration {iteration+1}/{self.max_iterations}")
+
+            response = await self.call_llm_with_retry(messages)
+
+            if response.stop_reason == "end_turn":
+                return {
+                    "status": "success",
+                    "result": response.content[-1].text,
+                    "iterations": iteration + 1,
+                    "tool_calls": tool_calls_made
+                }
+
+            # Handle tool calls
+            for block in response.content:
+                if block.type == "tool_use":
+                    result = await self.execute_tool_safely(block.name, block.input)
+                    tool_calls_made.append({
+                        "tool": block.name,
+                        "args": block.input,
+                        "result_length": len(result)
+                    })
+
+        return {
+            "status": "max_iterations_reached",
+            "result": None,
+            "iterations": self.max_iterations,
+            "tool_calls": tool_calls_made
+        }</code></pre>
+  </div>
+
+  <div class="pillar">
+    <h3>Pillar 2: Observability & Tracing</h3>
+    <p>When an agent produces a wrong answer or takes 47 LLM calls instead of 5, you need full observability to debug it. Use Langfuse (open-source) or LangSmith.</p>
+<pre><code">from langfuse import Langfuse
+from langfuse.decorators import observe, langfuse_context
+from functools import wraps
+import time
+
+langfuse = Langfuse(
+    public_key="pk-...",
+    secret_key="sk-...",
+    host="https://cloud.langfuse.com"
+)
+
+@observe()  # Automatically traces this function
+async def run_agent_with_tracing(goal: str, user_id: str):
+    # Add custom metadata to the trace
+    langfuse_context.update_current_trace(
+        name="customer-support-agent",
+        user_id=user_id,
+        metadata={"goal_length": len(goal)}
+    )
+
+    agent = ProductionAgent(llm, tools)
+    result = await agent.run(goal, run_id=langfuse_context.get_current_trace_id())
+
+    # Log evaluation score
+    langfuse_context.score_current_trace(
+        name="task_completed",
+        value=1 if result["status"] == "success" else 0
+    )
+
+    return result
+
+# Track costs
+def track_token_usage(model: str, input_tokens: int, output_tokens: int):
+    """Log costs per run for budget monitoring"""
+    costs = {
+        "claude-opus-4-6": (0.015, 0.075),    # per 1K input/output tokens
+        "claude-sonnet-4-6": (0.003, 0.015),
+        "claude-haiku-4-5-20251001": (0.00025, 0.00125)
+    }
+    in_cost, out_cost = costs.get(model, (0, 0))
+    total = (input_tokens / 1000 * in_cost) + (output_tokens / 1000 * out_cost)
+    langfuse.event(name="token_cost", metadata={"cost_usd": total, "model": model})</code></pre>
+  </div>
+
+  <div class="pillar">
+    <h3>Pillar 3: Caching & Cost Optimization</h3>
+<pre><code">import hashlib
+import json
+from redis import Redis
+from functools import wraps
+
+redis = Redis(host="localhost", port=6379, decode_responses=True)
+
+def cache_tool_result(ttl_seconds: int = 3600):
+    """Cache tool results in Redis to avoid redundant calls"""
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            # Create cache key from function name + args
+            cache_key = f"tool:{func.__name__}:{hashlib.md5(
+                json.dumps({**kwargs}, sort_keys=True).encode()
+            ).hexdigest()}"
+
+            # Try cache first
+            cached = redis.get(cache_key)
+            if cached:
+                return json.loads(cached)
+
+            # Execute and cache
+            result = await func(*args, **kwargs)
+            redis.setex(cache_key, ttl_seconds, json.dumps(result))
+            return result
+        return wrapper
+    return decorator
+
+@cache_tool_result(ttl_seconds=1800)  # Cache for 30 minutes
+async def web_search(query: str) -> str:
+    """Web search - results cached to avoid duplicate API calls"""
+    # ... actual search implementation
+
+# Use Claude's prompt caching for repeated system prompts
+def create_cached_system_message(long_system_prompt: str) -> list:
+    """Mark system prompt as cacheable (saves 90% on repeated calls)"""
+    return [
+        {
+            "type": "text",
+            "text": long_system_prompt,
+            "cache_control": {"type": "ephemeral"}  # Anthropic cache
+        }
+    ]</code></pre>
+  </div>
+
+  <div class="pillar">
+    <h3>Pillar 4: Human-in-the-Loop & Approval Gates</h3>
+<pre><code">from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.postgres import PostgresSaver
+
+# Use PostgreSQL for persistent checkpoints (survives restarts)
+checkpointer = PostgresSaver.from_conn_string("postgresql://...")
+
+# Interrupt the graph before sensitive actions
+workflow.add_node("approval_gate", approval_gate_node)
+workflow.compile(
+    checkpointer=checkpointer,
+    interrupt_before=["execute_payment", "send_email", "delete_file"]
+)
+
+async def run_with_approval(task: str, thread_id: str):
+    config = {"configurable": {"thread_id": thread_id}}
+
+    # Run until interruption
+    result = await app.ainvoke({"task": task}, config=config)
+
+    # Check if waiting for approval
+    state = await app.aget_state(config)
+    if state.next:  # Graph is interrupted
+        pending_action = state.values.get("pending_action")
+        print(f"⏸ Approval needed: {pending_action}")
+
+        # In production: send Slack notification, save to DB, etc.
+        approval = await notify_human_and_wait(pending_action)
+
+        if approval:
+            # Resume the graph
+            await app.ainvoke(None, config=config)
+        else:
+            print("❌ Action rejected by user")</code></pre>
+  </div>
+
+  <div class="pillar">
+    <h3>Pillar 5: Deployment Architecture</h3>
+<pre><code"># docker-compose.yml for agent system
+version: '3.8'
+services:
+  agent-api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@db:5432/agents
+    depends_on: [redis, db]
+    deploy:
+      replicas: 3  # Horizontal scaling
+
+  # Background task queue for long-running agents
+  celery-worker:
+    build: .
+    command: celery -A app.tasks worker --concurrency=10
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+
+  redis:
+    image: redis:7-alpine
+    volumes: ["redis_data:/data"]
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: agents
+      POSTGRES_PASSWORD: password</code></pre>
+
+<pre><code"># FastAPI server with async agent execution
+from fastapi import FastAPI, BackgroundTasks
+from fastapi.responses import StreamingResponse
+
+app = FastAPI()
+
+@app.post("/agent/run")
+async def run_agent(request: AgentRequest, background_tasks: BackgroundTasks):
+    """Non-blocking agent execution with callback URL"""
+    run_id = str(uuid.uuid4())
+    background_tasks.add_task(
+        execute_agent_and_callback,
+        goal=request.goal,
+        run_id=run_id,
+        callback_url=request.callback_url
+    )
+    return {"run_id": run_id, "status": "queued"}
+
+@app.get("/agent/stream/{run_id}")
+async def stream_agent_output(run_id: str):
+    """Server-sent events for real-time agent output"""
+    async def generate():
+        async for token in get_agent_stream(run_id):
+            yield f"data: {json.dumps({'token': token})}\n\n"
+    return StreamingResponse(generate(), media_type="text/event-stream")</code></pre>
+  </div>
+
+  <h2>Production Checklist</h2>
+  <ul>
+    <li>✅ Retry logic with exponential backoff on all LLM and tool calls</li>
+    <li>✅ Hard iteration cap (never infinite loops)</li>
+    <li>✅ Tool execution timeouts (30s per tool, 5min per agent run)</li>
+    <li>✅ Full distributed tracing (Langfuse/LangSmith)</li>
+    <li>✅ Cost tracking per run, per user, per day</li>
+    <li>✅ Redis caching for tool results and prompt caching for system prompts</li>
+    <li>✅ Human approval gates for irreversible actions</li>
+    <li>✅ Async execution with task queue (don't block HTTP threads)</li>
+    <li>✅ Horizontal scaling with stateless agent workers</li>
+    <li>✅ Input validation and output sanitization</li>
+    <li>✅ Rate limiting per user/organization</li>
+    <li>✅ Audit log of all agent actions</li>
+  </ul>
+
+  <div class="callout">
+    <strong>The production mindset shift:</strong> Your demo agent needs to work once. Your production agent needs to work 99.9% of the time, handle edge cases gracefully, stay within budget, and give you enough visibility to debug the 0.1% of failures — all while handling concurrent users.
+  </div>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../intermediate/multi-agent-systems.html">← Multi-Agent Systems</a>
+    <a class="nav-link" href="../../05-langchain-langgraph/intermediate/getting-started-langchain.html">Next: LangChain Guide →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Agents · Advanced Level</footer>
+</body>
+</html>

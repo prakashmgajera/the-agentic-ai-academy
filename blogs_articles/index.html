@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Articles — The Agentic AI Academy</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d2e;
+    --surface2: #141722;
+    --border: #2a2d3e;
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dim: rgba(99,102,241,0.1);
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #1a1d2e 0%, #0f1117 60%, #130f1e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--primary-dim);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 9999px;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #e2e8f0 30%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 1.125rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+  .stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 1.75rem; font-weight: 700; color: var(--primary-light); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Filters */
+  .filter-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .filter-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.25rem; }
+  .filter-btn {
+    padding: 0.35rem 0.875rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+  .filter-sep { width: 1px; height: 1.5rem; background: var(--border); }
+
+  /* Main content */
+  main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+
+  /* Section */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon { font-size: 1.5rem; }
+  .section-title { font-size: 1.25rem; font-weight: 700; }
+  .section-subtitle { font-size: 0.875rem; color: var(--muted); margin-top: 0.1rem; }
+  .article-count {
+    margin-left: auto;
+    background: var(--primary-dim);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 9999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    color: var(--primary-light);
+    font-weight: 600;
+  }
+
+  /* Article grid */
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+
+  /* Article card */
+  .article-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .article-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99,102,241,0.15);
+  }
+  .card-top { display: flex; align-items: center; justify-content: space-between; }
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .level-basic { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .level-intermediate { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+  .level-advanced { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .read-time { font-size: 0.75rem; color: var(--muted); }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.5; }
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .tag {
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.15);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.7rem;
+    color: var(--primary-light);
+  }
+  .card-arrow { color: var(--primary-light); font-size: 1rem; transition: transform 0.15s; }
+  .article-card:hover .card-arrow { transform: translateX(4px); }
+
+  /* Learning path */
+  .learning-path {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+  .learning-path h2 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .learning-path p { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; }
+  .path-track {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .path-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; min-width: 90px; }
+  .path-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text);
+    transition: border-color 0.15s;
+    white-space: nowrap;
+  }
+  .path-item:hover { border-color: var(--primary); }
+  .path-arrow { color: var(--muted); font-size: 0.75rem; }
+
+  /* Hidden for filter */
+  .article-card[data-hidden="true"] { display: none; }
+  .section[data-hidden="true"] { display: none; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  footer strong { color: var(--primary-light); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Knowledge Library</div>
+  <h1>The Agentic AI Academy<br>Blog & Article Hub</h1>
+  <p>Comprehensive guides from beginner to advanced across AI foundations, RAG, agents, LangChain, vector databases, and production engineering.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">20</div><div class="stat-label">Articles</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Domains</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Levels</div></div>
+    <div class="stat"><div class="stat-num">~3h</div><div class="stat-label">Total Reading</div></div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterArticles('all')">All Articles</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" onclick="filterArticles('basic')">🟢 Basic</button>
+  <button class="filter-btn" onclick="filterArticles('intermediate')">🟡 Intermediate</button>
+  <button class="filter-btn" onclick="filterArticles('advanced')">🔴 Advanced</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" onclick="filterArticles('foundations')">AI Foundations</button>
+  <button class="filter-btn" onclick="filterArticles('prompting')">Prompting</button>
+  <button class="filter-btn" onclick="filterArticles('rag')">RAG</button>
+  <button class="filter-btn" onclick="filterArticles('agents')">Agents</button>
+  <button class="filter-btn" onclick="filterArticles('langchain')">LangChain</button>
+  <button class="filter-btn" onclick="filterArticles('vectordb')">Vector DBs</button>
+  <button class="filter-btn" onclick="filterArticles('tools')">AI Tools</button>
+</div>
+
+<main>
+
+  <!-- Suggested Learning Path -->
+  <div class="learning-path">
+    <h2>🗺️ Suggested Learning Paths</h2>
+    <p>New to AI? Follow these paths. Each links to an article — click any item to open it.</p>
+    <div class="path-track">
+      <span class="path-label">🟢 Beginner</span>
+      <a class="path-item" href="01-ai-foundations/basic/what-is-ai.html">What is AI?</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="01-ai-foundations/basic/ml-vs-dl.html">ML vs DL</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="02-prompt-engineering/basic/intro-to-prompting.html">Prompting 101</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="03-rag/basic/what-is-rag.html">What is RAG?</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="04-ai-agents/basic/intro-to-ai-agents.html">Intro to Agents</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="06-vector-databases/basic/understanding-embeddings.html">Embeddings</a>
+    </div>
+    <div class="path-track">
+      <span class="path-label">🟡 Builder</span>
+      <a class="path-item" href="01-ai-foundations/intermediate/how-llms-work.html">How LLMs Work</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="02-prompt-engineering/intermediate/advanced-prompting-techniques.html">CoT & ReAct</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="03-rag/intermediate/building-rag-pipeline.html">Build RAG</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="05-langchain-langgraph/intermediate/getting-started-langchain.html">LangChain</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="04-ai-agents/intermediate/multi-agent-systems.html">Multi-Agents</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="07-ai-engineering-tools/intermediate/model-context-protocol.html">MCP</a>
+    </div>
+    <div class="path-track">
+      <span class="path-label">🔴 Advanced</span>
+      <a class="path-item" href="03-rag/advanced/advanced-rag-patterns.html">Advanced RAG</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="05-langchain-langgraph/advanced/stateful-agents-langgraph.html">LangGraph</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="04-ai-agents/advanced/production-agentic-systems.html">Prod Agents</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="06-vector-databases/advanced/vector-db-optimization.html">VectorDB Opt</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="02-prompt-engineering/advanced/prompt-injection-defense.html">AI Security</a>
+      <span class="path-arrow">→</span>
+      <a class="path-item" href="07-ai-engineering-tools/advanced/production-ai-systems.html">Full Stack AI</a>
+    </div>
+  </div>
+
+  <!-- Domain 1: AI Foundations -->
+  <div class="section" data-domain="foundations">
+    <div class="section-header">
+      <span class="section-icon">📚</span>
+      <div>
+        <div class="section-title">AI Foundations</div>
+        <div class="section-subtitle">Core concepts every AI practitioner needs to know</div>
+      </div>
+      <span class="article-count">3 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="01-ai-foundations/basic/what-is-ai.html" class="article-card" data-level="basic" data-domain="foundations">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 8 min</span>
+        </div>
+        <div class="card-title">What is Artificial Intelligence? A Beginner's Complete Guide</div>
+        <div class="card-desc">From the Turing Test to AGI — understand AI, ML, and deep learning and why they matter right now.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">AI History</span><span class="tag">ML</span><span class="tag">Concepts</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="01-ai-foundations/basic/ml-vs-dl.html" class="article-card" data-level="basic" data-domain="foundations">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 10 min</span>
+        </div>
+        <div class="card-title">Machine Learning vs Deep Learning: What's the Difference?</div>
+        <div class="card-desc">Clear breakdown of the AI family tree — when to use classic ML vs neural networks, with code examples.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">ML</span><span class="tag">Deep Learning</span><span class="tag">Python</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="01-ai-foundations/intermediate/how-llms-work.html" class="article-card" data-level="intermediate" data-domain="foundations">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 14 min</span>
+        </div>
+        <div class="card-title">How Large Language Models Work: From Tokens to Intelligence</div>
+        <div class="card-desc">Deep dive into tokenization, embeddings, Transformer attention, pre-training, RLHF, and why LLMs hallucinate.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">LLMs</span><span class="tag">Transformers</span><span class="tag">RLHF</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 2: Prompt Engineering -->
+  <div class="section" data-domain="prompting">
+    <div class="section-header">
+      <span class="section-icon">✍️</span>
+      <div>
+        <div class="section-title">Prompt Engineering</div>
+        <div class="section-subtitle">The art and science of communicating with AI effectively</div>
+      </div>
+      <span class="article-count">3 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="02-prompt-engineering/basic/intro-to-prompting.html" class="article-card" data-level="basic" data-domain="prompting">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 10 min</span>
+        </div>
+        <div class="card-title">Introduction to Prompt Engineering: Talk to AI Like a Pro</div>
+        <div class="card-desc">Master the fundamentals — role assignment, context, format specification, few-shot examples, and iteration.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Prompting</span><span class="tag">Few-Shot</span><span class="tag">Formats</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="02-prompt-engineering/intermediate/advanced-prompting-techniques.html" class="article-card" data-level="intermediate" data-domain="prompting">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 15 min</span>
+        </div>
+        <div class="card-title">Advanced Prompting: Chain-of-Thought, ToT, Self-Consistency & More</div>
+        <div class="card-desc">Research-backed techniques that unlock reasoning, accuracy, and reliability in LLM outputs.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">CoT</span><span class="tag">ReAct</span><span class="tag">Self-Consistency</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="02-prompt-engineering/advanced/prompt-injection-defense.html" class="article-card" data-level="advanced" data-domain="prompting">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 16 min</span>
+        </div>
+        <div class="card-title">Prompt Injection & AI Security: Attack Patterns & Defense Strategies</div>
+        <div class="card-desc">Understand direct/indirect injection attacks and build defense-in-depth for production AI systems.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Security</span><span class="tag">Injection</span><span class="tag">Production</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 3: RAG -->
+  <div class="section" data-domain="rag">
+    <div class="section-header">
+      <span class="section-icon">🔍</span>
+      <div>
+        <div class="section-title">Retrieval-Augmented Generation (RAG)</div>
+        <div class="section-subtitle">Ground LLMs in your data — eliminate hallucinations</div>
+      </div>
+      <span class="article-count">3 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="03-rag/basic/what-is-rag.html" class="article-card" data-level="basic" data-domain="rag">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 9 min</span>
+        </div>
+        <div class="card-title">What is RAG? Retrieval-Augmented Generation Explained</div>
+        <div class="card-desc">The concept, pipeline, and use cases — why RAG is the most important pattern for enterprise AI.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">RAG</span><span class="tag">Vector DB</span><span class="tag">Embeddings</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="03-rag/intermediate/building-rag-pipeline.html" class="article-card" data-level="intermediate" data-domain="rag">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 18 min</span>
+        </div>
+        <div class="card-title">Building a RAG Pipeline with LangChain: From Documents to Answers</div>
+        <div class="card-desc">End-to-end implementation with PDF loading, chunking, ChromaDB, MMR retrieval, and RAGAS evaluation.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">LangChain</span><span class="tag">ChromaDB</span><span class="tag">RAGAS</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="03-rag/advanced/advanced-rag-patterns.html" class="article-card" data-level="advanced" data-domain="rag">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 20 min</span>
+        </div>
+        <div class="card-title">Advanced RAG Patterns: HyDE, GraphRAG, Self-RAG & 15 More</div>
+        <div class="card-desc">All 15 advanced RAG patterns with implementations — from HyDE and hybrid search to GraphRAG and Self-RAG.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">HyDE</span><span class="tag">GraphRAG</span><span class="tag">Self-RAG</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 4: AI Agents -->
+  <div class="section" data-domain="agents">
+    <div class="section-header">
+      <span class="section-icon">🤖</span>
+      <div>
+        <div class="section-title">AI Agents</div>
+        <div class="section-subtitle">Building autonomous AI systems that think, plan, and act</div>
+      </div>
+      <span class="article-count">3 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="04-ai-agents/basic/intro-to-ai-agents.html" class="article-card" data-level="basic" data-domain="agents">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 11 min</span>
+        </div>
+        <div class="card-title">Introduction to AI Agents: What They Are and How They Work</div>
+        <div class="card-desc">The agent loop, four core components, tool use, and a complete minimal working agent from scratch.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Agents</span><span class="tag">Tool Use</span><span class="tag">Claude API</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="04-ai-agents/intermediate/multi-agent-systems.html" class="article-card" data-level="intermediate" data-domain="agents">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 17 min</span>
+        </div>
+        <div class="card-title">Building Multi-Agent Systems: CrewAI, AutoGen & LangGraph</div>
+        <div class="card-desc">Practical guide to all three leading multi-agent frameworks with full code examples and comparison.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">CrewAI</span><span class="tag">AutoGen</span><span class="tag">LangGraph</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="04-ai-agents/advanced/production-agentic-systems.html" class="article-card" data-level="advanced" data-domain="agents">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 20 min</span>
+        </div>
+        <div class="card-title">Production Agentic Systems: Architecture, Reliability & Observability</div>
+        <div class="card-desc">The 5 pillars of production agents — error handling, tracing, caching, human-in-the-loop, and deployment.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Production</span><span class="tag">Langfuse</span><span class="tag">FastAPI</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 5: LangChain & LangGraph -->
+  <div class="section" data-domain="langchain">
+    <div class="section-header">
+      <span class="section-icon">⛓️</span>
+      <div>
+        <div class="section-title">LangChain & LangGraph</div>
+        <div class="section-subtitle">The most widely used frameworks for LLM application development</div>
+      </div>
+      <span class="article-count">2 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="05-langchain-langgraph/intermediate/getting-started-langchain.html" class="article-card" data-level="intermediate" data-domain="langchain">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 17 min</span>
+        </div>
+        <div class="card-title">Getting Started with LangChain: Chains, Tools, Memory & LCEL</div>
+        <div class="card-desc">Master the LCEL pipe operator, prompt templates, conversation memory, tool use, and output parsers.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">LangChain</span><span class="tag">LCEL</span><span class="tag">Memory</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="05-langchain-langgraph/advanced/stateful-agents-langgraph.html" class="article-card" data-level="advanced" data-domain="langchain">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 19 min</span>
+        </div>
+        <div class="card-title">Stateful AI Agents with LangGraph: Graphs, Checkpointing & HITL</div>
+        <div class="card-desc">Build production-grade stateful agents with persistent memory, conditional branching, and human approval gates.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">LangGraph</span><span class="tag">Checkpointing</span><span class="tag">Streaming</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 6: Vector Databases -->
+  <div class="section" data-domain="vectordb">
+    <div class="section-header">
+      <span class="section-icon">🗃️</span>
+      <div>
+        <div class="section-title">Vector Databases</div>
+        <div class="section-subtitle">Semantic search infrastructure for AI applications</div>
+      </div>
+      <span class="article-count">3 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="06-vector-databases/basic/understanding-embeddings.html" class="article-card" data-level="basic" data-domain="vectordb">
+        <div class="card-top">
+          <span class="level-badge level-basic">🟢 Basic</span>
+          <span class="read-time">⏱ 10 min</span>
+        </div>
+        <div class="card-title">Understanding Embeddings & Vector Search: The Mathematics of Meaning</div>
+        <div class="card-desc">How embedding models work, cosine similarity, and building a semantic search system from scratch.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Embeddings</span><span class="tag">Cosine Sim</span><span class="tag">SentenceTransformers</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="06-vector-databases/intermediate/choosing-vector-database.html" class="article-card" data-level="intermediate" data-domain="vectordb">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 14 min</span>
+        </div>
+        <div class="card-title">Choosing the Right Vector Database: Pinecone vs Chroma vs Weaviate vs pgvector</div>
+        <div class="card-desc">Honest comparison with code for all four major options and a clear decision framework.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Pinecone</span><span class="tag">Chroma</span><span class="tag">Weaviate</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="06-vector-databases/advanced/vector-db-optimization.html" class="article-card" data-level="advanced" data-domain="vectordb">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 18 min</span>
+        </div>
+        <div class="card-title">Vector Database Optimization at Scale: ANN Indexes, Quantization & Tuning</div>
+        <div class="card-desc">HNSW and IVF algorithms, PQ quantization, Matryoshka embeddings, benchmarking, and production operations.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">HNSW</span><span class="tag">FAISS</span><span class="tag">Quantization</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Domain 7: AI Engineering Tools -->
+  <div class="section" data-domain="tools">
+    <div class="section-header">
+      <span class="section-icon">🛠️</span>
+      <div>
+        <div class="section-title">AI Engineering Tools</div>
+        <div class="section-subtitle">The 2026 toolkit for building and operating production AI</div>
+      </div>
+      <span class="article-count">2 articles</span>
+    </div>
+    <div class="article-grid">
+
+      <a href="07-ai-engineering-tools/intermediate/model-context-protocol.html" class="article-card" data-level="intermediate" data-domain="tools">
+        <div class="card-top">
+          <span class="level-badge level-intermediate">🟡 Intermediate</span>
+          <span class="read-time">⏱ 15 min</span>
+        </div>
+        <div class="card-title">Model Context Protocol (MCP): The USB-C of AI Tool Integration</div>
+        <div class="card-desc">Build MCP servers in Python with FastMCP, configure Claude Desktop, and connect to any tool via a standard interface.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">MCP</span><span class="tag">FastMCP</span><span class="tag">Anthropic</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="07-ai-engineering-tools/advanced/production-ai-systems.html" class="article-card" data-level="advanced" data-domain="tools">
+        <div class="card-top">
+          <span class="level-badge level-advanced">🔴 Advanced</span>
+          <span class="read-time">⏱ 20 min</span>
+        </div>
+        <div class="card-title">Production AI Systems in 2026: The Full-Stack AI Engineer's Toolkit</div>
+        <div class="card-desc">LiteLLM gateway, Langfuse observability, RAGAS eval, CI/CD for AI, cost optimization, and the complete 2026 stack.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">LiteLLM</span><span class="tag">Langfuse</span><span class="tag">CI/CD</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>The Agentic AI Academy</strong> · 20 Articles · 7 Domains · Updated May 2026
+</footer>
+
+<script>
+  function filterArticles(filter) {
+    // Update button states
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const cards = document.querySelectorAll('.article-card');
+    const sections = document.querySelectorAll('.section');
+
+    if (filter === 'all') {
+      cards.forEach(c => c.removeAttribute('data-hidden'));
+      sections.forEach(s => s.removeAttribute('data-hidden'));
+      return;
+    }
+
+    const levelFilters = ['basic', 'intermediate', 'advanced'];
+    const domainFilters = ['foundations', 'prompting', 'rag', 'agents', 'langchain', 'vectordb', 'tools'];
+
+    cards.forEach(card => {
+      let show = false;
+      if (levelFilters.includes(filter)) {
+        show = card.getAttribute('data-level') === filter;
+      } else if (domainFilters.includes(filter)) {
+        show = card.getAttribute('data-domain') === filter;
+      }
+      card.setAttribute('data-hidden', show ? 'false' : 'true');
+    });
+
+    // Hide sections with no visible cards
+    sections.forEach(section => {
+      const visibleCards = section.querySelectorAll('.article-card:not([data-hidden="true"])');
+      section.setAttribute('data-hidden', visibleCards.length === 0 ? 'true' : 'false');
+    });
+  }
+</script>
+
+</body>
+</html>

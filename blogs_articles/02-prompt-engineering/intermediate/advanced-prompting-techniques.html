@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Prompting Techniques — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  .prompt-box{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin:1rem 0 1.5rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.85rem;color:#e2e8f0;white-space:pre-wrap;}
+  .prompt-box .label{color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;display:block;font-family:'Segoe UI',sans-serif;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .technique-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0;}
+  .technique-card h3{color:var(--primary-light);margin-top:0;}
+  .technique-card .when{background:rgba(34,197,94,0.1);border-radius:4px;padding:0.5rem 0.75rem;font-size:0.875rem;color:var(--green);margin:0.75rem 0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../../index.html">🏠 Home</a> › <a href="#">Prompt Engineering</a> › Advanced Techniques
+</nav>
+<div class="hero">
+  <span class="badge">🟡 Intermediate</span>
+  <h1>Advanced Prompting Techniques:<br>Chain-of-Thought, ToT, Self-Consistency & More</h1>
+  <div class="meta"><span>✍️ Prompt Engineering</span><span>⏱ 15 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Beyond basic prompting lies a rich set of techniques that significantly improve LLM reasoning, accuracy, and reliability. These aren't tricks — they're systematic approaches backed by research that exploit how Transformers actually process information.</p>
+
+  <div class="technique-card">
+    <h3>1. Chain-of-Thought (CoT) Prompting</h3>
+    <div class="when">✅ Best for: math problems, logical reasoning, multi-step deductions</div>
+    <p>CoT prompting instructs the model to show its reasoning step-by-step before giving the final answer. This dramatically improves accuracy on tasks requiring multi-step reasoning.</p>
+    <div class="prompt-box"><span class="label">Zero-Shot CoT — just add "think step by step"</span>Q: A store has 120 apples. They sell 35% on Monday and 25% of the remainder on Tuesday. How many are left?
+
+Think through this step by step before giving the final answer.</div>
+    <div class="prompt-box"><span class="label">Few-Shot CoT — show reasoning examples</span>Q: Roger has 5 tennis balls. He buys 2 cans of 3. How many does he have?
+A: Roger starts with 5. 2 cans × 3 balls = 6 new balls. 5 + 6 = 11. Answer: 11.
+
+Q: A juggler has 16 balls. Half are golf balls. Of the golf balls, half are blue. How many blue golf balls?
+A: 16 ÷ 2 = 8 golf balls. 8 ÷ 2 = 4 blue golf balls. Answer: 4.
+
+Q: [Your problem here]
+A:</div>
+    <p><strong>Why it works:</strong> By generating intermediate reasoning tokens, the model gets more "thinking space" — each step can inform the next, reducing errors that accumulate in single-step generation.</p>
+  </div>
+
+  <div class="technique-card">
+    <h3>2. Self-Consistency</h3>
+    <div class="when">✅ Best for: math, factual questions, decisions with a correct answer</div>
+    <p>Instead of one generation, generate multiple reasoning chains with higher temperature, then take the majority answer. This is like asking several smart people the same question and going with the consensus.</p>
+    <div class="prompt-box"><span class="label">Implementation (pseudocode)</span>responses = []
+for i in range(5):   # generate 5 independent reasoning chains
+    response = llm(prompt, temperature=0.8)
+    responses.append(extract_final_answer(response))
+
+final_answer = majority_vote(responses)  # most common answer wins</div>
+    <p>Self-consistency can improve accuracy on benchmarks by 10–20% at the cost of 5× the API calls. Worth it for high-stakes decisions.</p>
+  </div>
+
+  <div class="technique-card">
+    <h3>3. Tree of Thoughts (ToT)</h3>
+    <div class="when">✅ Best for: creative planning, complex problem solving, strategic decisions</div>
+    <p>ToT generalizes CoT by exploring multiple reasoning branches simultaneously and using the model to evaluate which branches are most promising — like a search algorithm over thought space.</p>
+    <div class="prompt-box"><span class="label">ToT Prompt Structure</span>Problem: [describe the problem]
+
+Generate 3 different high-level approaches to solve this. For each approach, rate its feasibility (1-10) and identify the biggest risk.
+
+Then, take the highest-rated approach and generate 3 sub-approaches for its first step. Evaluate each and select the best one to continue exploring.</div>
+  </div>
+
+  <div class="technique-card">
+    <h3>4. ReAct (Reason + Act)</h3>
+    <div class="when">✅ Best for: agentic tasks, tool use, multi-step workflows with external systems</div>
+    <p>ReAct interleaves reasoning (Thought) with actions (Act) and observations. The model thinks → takes an action (search, calculate, look up) → observes the result → continues thinking. This is the foundation of most AI agent frameworks.</p>
+    <div class="prompt-box"><span class="label">ReAct Pattern</span>You have access to these tools:
+- search(query): Returns top 3 web results
+- calculate(expression): Returns numeric result
+- get_weather(city): Returns current weather
+
+Respond in this format:
+Thought: [your reasoning]
+Action: [tool_name(args)]
+Observation: [result of action]
+... (repeat as needed)
+Final Answer: [your conclusion]
+
+Question: What is the population of the city with the tallest building in the world?</div>
+  </div>
+
+  <div class="technique-card">
+    <h3>5. Prompt Chaining</h3>
+    <div class="when">✅ Best for: complex multi-stage tasks, quality pipelines, structured workflows</div>
+    <p>Break a complex task into a sequence of simpler prompts where each output feeds the next. This improves quality (each stage can be specialized) and allows validation between steps.</p>
+    <div class="prompt-box"><span class="label">3-Stage Writing Pipeline</span># Stage 1: Research & outline
+prompt_1 = f"Create a detailed outline for an article about {topic}. Include 5 sections with 3 sub-points each."
+outline = llm(prompt_1)
+
+# Stage 2: Draft
+prompt_2 = f"Write a detailed first draft based on this outline:\n{outline}"
+draft = llm(prompt_2)
+
+# Stage 3: Edit & polish
+prompt_3 = f"""Edit this draft for clarity, flow, and engagement.
+Fix any factual inconsistencies. Tighten the opening hook.
+Draft:\n{draft}"""
+final = llm(prompt_3)</div>
+  </div>
+
+  <div class="technique-card">
+    <h3>6. Structured Output with JSON Schema</h3>
+    <div class="when">✅ Best for: any production system that needs to parse LLM output programmatically</div>
+    <p>Force the model to produce valid, schema-conforming JSON. Most major LLM APIs support this natively — it eliminates parsing errors entirely.</p>
+    <div class="prompt-box"><span class="label">Using OpenAI JSON mode</span>from openai import OpenAI
+from pydantic import BaseModel
+from typing import List
+
+class ProductReview(BaseModel):
+    sentiment: str  # "positive" | "neutral" | "negative"
+    score: int      # 1-10
+    key_themes: List[str]
+    suggested_response: str
+
+client = OpenAI()
+completion = client.beta.chat.completions.parse(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "Extract review insights."},
+        {"role": "user", "content": f"Review: {review_text}"}
+    ],
+    response_format=ProductReview,
+)
+review_data = completion.choices[0].message.parsed</div>
+  </div>
+
+  <div class="technique-card">
+    <h3>7. Metacognitive Prompting</h3>
+    <div class="when">✅ Best for: complex analysis, fact-checking, reducing hallucination</div>
+    <p>Ask the model to evaluate its own confidence and reasoning. This catches overconfident wrong answers and improves calibration.</p>
+    <div class="prompt-box"><span class="label">Self-Evaluation Prompt</span>Answer the following question. After answering:
+1. Rate your confidence: high / medium / low
+2. List any assumptions you made
+3. Identify what information you're uncertain about
+4. If confidence is low or medium, suggest how to verify
+
+Question: What was the GDP of Vietnam in 2024?</div>
+  </div>
+
+  <h2>Choosing the Right Technique</h2>
+  <ul>
+    <li><strong>Math / logic problems</strong> → Chain-of-Thought + Self-Consistency</li>
+    <li><strong>Creative problem solving</strong> → Tree of Thoughts</li>
+    <li><strong>Agent workflows with tools</strong> → ReAct</li>
+    <li><strong>Multi-step production tasks</strong> → Prompt Chaining</li>
+    <li><strong>Programmatic output parsing</strong> → Structured JSON output</li>
+    <li><strong>Uncertain/complex factual claims</strong> → Metacognitive prompting</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Research finding:</strong> Wei et al. (2022) showed Chain-of-Thought prompting with few-shot examples improved performance on the GSM8K math benchmark from 17.9% (standard prompting) to 74.4% with large models. Reasoning unlocked by prompting is not a trick — it reflects genuine latent capability in the model.
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>Chain-of-Thought forces step-by-step reasoning — a huge boost for logic tasks</li>
+    <li>Self-Consistency samples multiple chains and votes — reduces variance at compute cost</li>
+    <li>Tree of Thoughts explores branching reasoning — like heuristic search over ideas</li>
+    <li>ReAct is the pattern behind most AI agents: think, act, observe, repeat</li>
+    <li>Prompt chaining breaks complex tasks into quality-controlled stages</li>
+    <li>Structured output eliminates parsing errors in production systems</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../basic/intro-to-prompting.html">← Intro to Prompting</a>
+    <a class="nav-link" href="../advanced/prompt-injection-defense.html">Next: Prompt Injection & Security →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · Prompt Engineering · Intermediate Level</footer>
+</body>
+</html>

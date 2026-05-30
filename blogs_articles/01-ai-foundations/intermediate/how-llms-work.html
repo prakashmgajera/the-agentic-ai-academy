@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Large Language Models Work — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+  .card h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;color:var(--primary-light);}
+  .card p{font-size:0.875rem;margin:0;}
+  .step{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start;}
+  .step-num{min-width:2rem;height:2rem;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.875rem;flex-shrink:0;}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../../index.html">🏠 Home</a> › <a href="#">AI Foundations</a> › How LLMs Work
+</nav>
+
+<div class="hero">
+  <span class="badge">🟡 Intermediate</span>
+  <h1>How Large Language Models Work:<br>From Tokens to Intelligence</h1>
+  <div class="meta">
+    <span>📚 AI Foundations</span>
+    <span>⏱ 14 min read</span>
+    <span>🗓 May 2026</span>
+  </div>
+</div>
+
+<div class="content">
+  <p>Large Language Models (LLMs) like Claude, GPT-4, and Gemini have fundamentally changed what software can do. But how do they actually work? Understanding the mechanics — from tokenization to attention to RLHF — will make you a far more effective AI practitioner.</p>
+
+  <h2>Step 1: Tokenization</h2>
+  <p>LLMs don't read text the way humans do. They process <strong>tokens</strong> — chunks of text that are typically 3–4 characters on average. Words like "cat" might be one token, while "tokenization" might be split into ["token", "ization"].</p>
+
+<pre><code># Example tokenization with tiktoken (OpenAI's tokenizer)
+import tiktoken
+
+enc = tiktoken.get_encoding("cl100k_base")
+tokens = enc.encode("The Agentic AI Academy teaches advanced AI skills.")
+print(tokens)       # [791, 8125, 292, 15592, 17174, 45696, 11084, 15592, 7512, 13]
+print(len(tokens))  # 10 tokens for this sentence</code></pre>
+
+  <p>Modern LLMs use a vocabulary of ~32,000–100,000 tokens. The tokenizer maps text to integer IDs, which become the raw input to the model.</p>
+
+  <h2>Step 2: Embeddings</h2>
+  <p>Each token ID is converted into a high-dimensional vector called an <strong>embedding</strong>. This transforms discrete tokens into a continuous numerical space where similar concepts cluster together.</p>
+  <p>For example, in a well-trained embedding space, the vectors for "king" − "man" + "woman" ≈ "queen". The model learns these relationships from statistical patterns across billions of text examples.</p>
+
+  <div class="callout">
+    <strong>Why embeddings matter:</strong> They allow the model to represent meaning mathematically. The geometry of the embedding space encodes semantic relationships that drive the model's understanding.
+  </div>
+
+  <h2>Step 3: The Transformer Architecture</h2>
+  <p>The Transformer (introduced in "Attention Is All You Need", 2017) is the engine of every modern LLM. It has two core innovations:</p>
+
+  <h3>Self-Attention</h3>
+  <p>Self-attention lets every token in the input "look at" every other token simultaneously and decide how relevant each is. This is computed as:</p>
+  <ul>
+    <li>Each token creates a <strong>Query</strong> (what am I looking for?)</li>
+    <li>Each token creates a <strong>Key</strong> (what do I contain?)</li>
+    <li>Each token creates a <strong>Value</strong> (what should I contribute?)</li>
+    <li>Attention scores = softmax(Q·Kᵀ / √d) — a probability distribution over all tokens</li>
+    <li>Output = weighted sum of Values</li>
+  </ul>
+
+<pre><code># Conceptual self-attention (simplified)
+import torch
+import torch.nn.functional as F
+
+def attention(Q, K, V, d_k):
+    scores = torch.matmul(Q, K.transpose(-2, -1)) / (d_k ** 0.5)
+    weights = F.softmax(scores, dim=-1)  # probability distribution
+    return torch.matmul(weights, V)      # weighted combination of values</code></pre>
+
+  <h3>Multi-Head Attention</h3>
+  <p>Instead of one attention function, Transformers use multiple "heads" in parallel — each learning to attend to different kinds of relationships (syntax, coreference, semantics, etc.). Their outputs are concatenated and projected.</p>
+
+  <h3>Feed-Forward Layers</h3>
+  <p>After attention, each position passes through a position-wise feed-forward network — two linear transformations with a ReLU/GELU activation. These layers are where most of the model's "knowledge" is stored.</p>
+
+  <h2>Step 4: Pre-training (Next Token Prediction)</h2>
+  <p>LLMs are pre-trained on vast corpora of internet text using a simple objective: <strong>predict the next token</strong>. Given "The sky is", the model learns to predict "blue" (or similar tokens) with high probability.</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div><strong>Collect data:</strong> Billions of web pages, books, code, scientific papers (~trillions of tokens)</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div><strong>Initialize:</strong> Random weights across hundreds of transformer layers and billions of parameters</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div><strong>Train:</strong> For each sequence, compute predicted probabilities; minimize cross-entropy loss via gradient descent</div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div><strong>Scale:</strong> More data + more parameters + more compute → emergent capabilities appear (reasoning, coding, etc.)</div>
+  </div>
+
+  <p>GPT-4 is estimated to have ~1 trillion parameters and was trained on thousands of GPUs for months. The cost: hundreds of millions of dollars.</p>
+
+  <h2>Step 5: Fine-tuning & RLHF</h2>
+  <p>A pre-trained model is a raw language predictor — it would complete "Tell me how to make a bomb" with enthusiastic instructions. <strong>Fine-tuning</strong> shapes it into a helpful, safe assistant.</p>
+
+  <h3>Supervised Fine-Tuning (SFT)</h3>
+  <p>Human trainers write example conversations showing the desired assistant behavior. The model is fine-tuned on this dataset.</p>
+
+  <h3>Reinforcement Learning from Human Feedback (RLHF)</h3>
+  <ol>
+    <li>The model generates multiple responses to the same prompt</li>
+    <li>Human raters rank which response is better</li>
+    <li>A <strong>reward model</strong> is trained to predict human preferences</li>
+    <li>The LLM is fine-tuned using RL (PPO) to maximize the reward model's score</li>
+  </ol>
+
+  <div class="callout">
+    <strong>RLHF is why ChatGPT felt different:</strong> Prior LLMs were raw predictors. RLHF aligned them with human preferences — making them helpful, harmless, and honest. Claude uses Constitutional AI (CAI), Anthropic's refinement of RLHF.
+  </div>
+
+  <h2>Step 6: Inference — How LLMs Generate Text</h2>
+  <p>At inference time, the model generates text <strong>one token at a time</strong>. Each new token becomes part of the context for predicting the next token — this is called <strong>autoregressive generation</strong>.</p>
+
+<pre><code># Pseudocode for autoregressive generation
+context = tokenize(prompt)
+for _ in range(max_tokens):
+    logits = model(context)           # shape: [vocab_size]
+    probs = softmax(logits / temp)    # temperature controls randomness
+    next_token = sample(probs)        # or argmax for greedy decoding
+    context.append(next_token)
+    if next_token == EOS_TOKEN:
+        break
+return detokenize(context)</code></pre>
+
+  <p><strong>Temperature</strong> controls creativity: lower (0.0–0.3) = more deterministic, higher (0.8–1.5) = more diverse/creative.</p>
+
+  <h2>Context Window & KV Cache</h2>
+  <p>The <strong>context window</strong> is the maximum number of tokens the model can process at once. Early GPT models had 2K tokens; modern models support 128K–2M tokens.</p>
+  <p>The <strong>KV (key-value) cache</strong> is an optimization: previously computed attention keys and values are cached so they don't need recomputation for each new token. This makes inference dramatically faster.</p>
+
+  <h2>Why Do LLMs "Hallucinate"?</h2>
+  <p>LLMs generate the statistically most likely next token — they don't "look up facts." When queried about something outside their training distribution, they confidently generate plausible-sounding text that may be wrong. Solutions include:</p>
+  <ul>
+    <li><strong>RAG</strong> — Retrieval-Augmented Generation: fetch real documents before generating</li>
+    <li><strong>Tool use</strong> — Give the model a search tool to look up current facts</li>
+    <li><strong>Structured outputs</strong> — Force JSON schema to reduce freeform hallucination</li>
+    <li><strong>Temperature = 0</strong> — More deterministic outputs for factual tasks</li>
+  </ul>
+
+  <h2>The Scaling Laws</h2>
+  <p>Kaplan et al. (2020) at OpenAI discovered that LLM performance follows predictable <strong>power laws</strong> with respect to model size (N), dataset size (D), and compute (C). Chinchilla (2022) refined this: for a given compute budget, train a smaller model on more data rather than a large model on less data.</p>
+
+  <div class="card-grid">
+    <div class="card"><h4>GPT-2 (2019)</h4><p>1.5B parameters. Shocked researchers with coherent long-form text.</p></div>
+    <div class="card"><h4>GPT-3 (2020)</h4><p>175B parameters. Few-shot learning emerged as a surprising capability.</p></div>
+    <div class="card"><h4>Claude 3 (2024)</h4><p>Undisclosed size. State-of-the-art reasoning, coding, and safety.</p></div>
+    <div class="card"><h4>Llama 3.1 (2024)</h4><p>8B–405B parameters. Open-source, competitive with proprietary models.</p></div>
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>LLMs tokenize text → embed tokens → pass through transformer layers → predict next tokens</li>
+    <li>Self-attention is the core mechanism: every token attends to every other token</li>
+    <li>Pre-training on massive corpora gives broad knowledge; RLHF aligns the model to be helpful</li>
+    <li>LLMs generate text autoregressively — one token at a time</li>
+    <li>Hallucination stems from statistical generation, not factual recall — RAG and tools are the fix</li>
+    <li>Scaling laws: bigger models + more data + more compute → more capable AI</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../basic/ml-vs-dl.html">← ML vs Deep Learning</a>
+    <a class="nav-link" href="../../02-prompt-engineering/basic/intro-to-prompting.html">Next: Prompt Engineering →</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Foundations · Intermediate Level</footer>
+</body>
+</html>

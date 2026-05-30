@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production AI Systems — The Agentic AI Academy</title>
+<style>
+  :root{--bg:#0f1117;--surface:#1a1d2e;--border:#2a2d3e;--primary:#6366f1;--primary-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--primary-light);text-decoration:none;}a:hover{text-decoration:underline;}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);}
+  nav a{color:var(--muted);}nav a:hover{color:var(--text);}
+  .hero{background:linear-gradient(135deg,#1a1d2e 0%,#0f1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem;max-width:860px;margin:0 auto;}
+  .badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);margin-bottom:1rem;}
+  .meta{display:flex;gap:1.5rem;color:var(--muted);font-size:0.875rem;margin-top:1rem;flex-wrap:wrap;}
+  h1{font-size:2.25rem;font-weight:700;line-height:1.2;}
+  .content{max-width:860px;margin:0 auto;padding:2.5rem 2rem;}
+  h2{font-size:1.5rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--primary-light);border-left:3px solid var(--primary);padding-left:0.75rem;}
+  h3{font-size:1.125rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text);}
+  p{margin-bottom:1rem;color:#cbd5e1;}
+  ul,ol{margin:0.5rem 0 1rem 1.5rem;color:#cbd5e1;}
+  li{margin-bottom:0.4rem;}
+  code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:0.15rem 0.4rem;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.875em;color:#a78bfa;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem;overflow-x:auto;margin:1rem 0 1.5rem;}
+  pre code{background:none;border:none;padding:0;color:#e2e8f0;font-size:0.875rem;line-height:1.6;}
+  .callout{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;}
+  .callout strong{color:var(--primary-light);}
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:0.875rem;max-width:860px;margin:0 auto;}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);flex-wrap:wrap;gap:1rem;}
+  .nav-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:0.875rem;color:var(--muted);transition:border-color 0.2s;}
+  .nav-link:hover{border-color:var(--primary);color:var(--text);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav><a href="../../index.html">🏠 Home</a> › <a href="#">AI Engineering Tools</a> › Production AI Systems</nav>
+<div class="hero">
+  <span class="badge">🔴 Advanced</span>
+  <h1>Production AI Systems in 2026:<br>The Full-Stack AI Engineer's Toolkit</h1>
+  <div class="meta"><span>🛠️ AI Engineering Tools</span><span>⏱ 20 min read</span><span>🗓 May 2026</span></div>
+</div>
+<div class="content">
+  <p>Building production AI systems is now a distinct engineering discipline. This article covers the full toolkit that AI engineers use in 2026 — from LLM gateways and observability to CI/CD for AI and model evaluation frameworks.</p>
+
+  <h2>1. LLM Gateway: LiteLLM</h2>
+  <p>LiteLLM provides a unified OpenAI-compatible API across 100+ LLM providers. It enables fallbacks, load balancing, cost tracking, and provider switching without changing application code.</p>
+<pre><code"># Deploy LiteLLM as a gateway server
+# docker-compose.yml
+version: '3'
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports: ["4000:4000"]
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    command: --config /app/config.yaml
+
+# litellm config.yaml
+model_list:
+  - model_name: "gpt-4o"
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: os.environ/OPENAI_API_KEY
+
+  - model_name: "claude-opus"
+    litellm_params:
+      model: anthropic/claude-opus-4-6
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: "smart-fallback"
+    litellm_params:
+      model: claude-opus-4-6
+      fallbacks: ["gpt-4o", "gemini-pro"]  # Try in order on failure
+
+router_settings:
+  routing_strategy: "least-busy"  # or "latency-based", "cost-based"
+  enable_pre_call_checks: true</code></pre>
+
+<pre><code"># Your application code — same API regardless of provider
+from openai import OpenAI
+
+# Point to LiteLLM instead of OpenAI
+client = OpenAI(
+    base_url="http://localhost:4000",
+    api_key="your-litellm-master-key"
+)
+
+# Seamlessly switch between models
+response = client.chat.completions.create(
+    model="smart-fallback",  # LiteLLM handles provider selection
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+# Track costs (LiteLLM logs to SQLite/Redis automatically)
+# curl http://localhost:4000/spend returns per-user, per-model costs</code></pre>
+
+  <h2>2. Observability: Langfuse</h2>
+  <p>Langfuse is an open-source LLM observability platform. It traces every LLM call, tool use, and chain execution — giving you full visibility into production AI behavior.</p>
+<pre><code"># pip install langfuse
+from langfuse.decorators import observe, langfuse_context
+from langfuse import Langfuse
+
+langfuse = Langfuse(
+    public_key="pk-lf-...",
+    secret_key="sk-lf-...",
+    host="https://cloud.langfuse.com"  # or self-hosted
+)
+
+@observe(name="rag-pipeline")  # Trace this function automatically
+def answer_question(user_id: str, question: str) -> str:
+    # Add custom context to this trace
+    langfuse_context.update_current_trace(
+        user_id=user_id,
+        tags=["rag", "production"],
+        metadata={"question_length": len(question)}
+    )
+
+    # Retrieval step — automatic child span
+    docs = retrieve_documents(question)
+
+    # Generation step — automatic child span
+    answer = generate_answer(question, docs)
+
+    # Score the quality (can be done async by evaluators)
+    langfuse_context.score_current_trace(
+        name="answer_quality",
+        value=0.9,  # From automated evaluation
+        comment="High relevance, well-cited"
+    )
+
+    return answer
+
+# Run evaluations on production data
+def run_evals():
+    # Fetch recent traces
+    traces = langfuse.fetch_traces(limit=100, tags=["rag"]).data
+
+    for trace in traces:
+        # Score each trace for faithfulness using an LLM judge
+        score = llm_judge_faithfulness(
+            question=trace.input,
+            answer=trace.output,
+            context=trace.metadata.get("retrieved_docs")
+        )
+        langfuse.score(
+            trace_id=trace.id,
+            name="faithfulness",
+            value=score
+        )</code></pre>
+
+  <h2>3. Evaluation Framework: RAGAS + Braintrust</h2>
+<pre><code"># RAGAS for RAG-specific evaluation
+from ragas import evaluate
+from ragas.metrics import faithfulness, answer_relevancy, context_recall
+from datasets import Dataset
+
+# Your test dataset
+test_data = {
+    "question": ["What's the refund policy?", "How to cancel?"],
+    "answer": [rag_system.answer(q) for q in questions],
+    "contexts": [rag_system.retrieve(q) for q in questions],
+    "ground_truth": ["30-day full refund...", "Cancel in settings..."]
+}
+
+results = evaluate(
+    Dataset.from_dict(test_data),
+    metrics=[faithfulness, answer_relevancy, context_recall]
+)
+print(results.to_pandas())</code></pre>
+
+<pre><code"># Braintrust for A/B testing prompts
+import braintrust
+
+@braintrust.traced
+def generate_with_prompt_v1(question: str) -> str:
+    return llm.invoke(PROMPT_V1.format(question=question)).content
+
+@braintrust.traced
+def generate_with_prompt_v2(question: str) -> str:
+    return llm.invoke(PROMPT_V2.format(question=question)).content
+
+# Run experiment
+experiment = braintrust.init(project="rag-system", experiment="prompt-v1-vs-v2")
+for question, ground_truth in test_cases:
+    with experiment.start_span():
+        v1_output = generate_with_prompt_v1(question)
+        v2_output = generate_with_prompt_v2(question)
+
+        # Compare outputs automatically
+        experiment.log(
+            input=question,
+            output=v1_output,
+            expected=ground_truth,
+            scores={"accuracy": score_answer(v1_output, ground_truth)}
+        )</code></pre>
+
+  <h2>4. CI/CD for AI Systems</h2>
+<pre><code"># .github/workflows/ai-eval.yml
+name: AI System Evaluation
+
+on:
+  pull_request:
+    paths:
+      - 'prompts/**'
+      - 'rag/**'
+      - 'agents/**'
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run evaluation suite
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python -m pytest tests/evals/ -v \
+            --benchmark-enabled \
+            --benchmark-compare=baseline.json
+
+      - name: Check regression threshold
+        run: |
+          python scripts/check_regression.py \
+            --metric faithfulness \
+            --threshold 0.85 \
+            --fail-below
+
+      - name: Run safety checks
+        run: |
+          python scripts/safety_eval.py \
+            --prompt-dir prompts/ \
+            --adversarial-dataset tests/adversarial_prompts.jsonl
+
+      - name: Cost estimation
+        run: |
+          python scripts/estimate_costs.py \
+            --usage-profile tests/usage_profile.json \
+            --alert-if-above 1000  # Alert if estimated monthly cost > $1000</code></pre>
+
+  <h2>5. Cost Optimization Strategies</h2>
+<pre><code"># Strategy 1: Prompt caching (Anthropic)
+import anthropic
+
+client = anthropic.Anthropic()
+
+# Cache the large system prompt (1000+ tokens) → 90% cost reduction on repeated calls
+response = client.messages.create(
+    model="claude-opus-4-6",
+    max_tokens=1024,
+    system=[
+        {
+            "type": "text",
+            "text": LARGE_SYSTEM_PROMPT,  # 2000+ token system prompt
+            "cache_control": {"type": "ephemeral"}  # Cache for 5 minutes
+        }
+    ],
+    messages=[{"role": "user", "content": user_message}]
+)
+# Cache hit: 10× cheaper + 3× faster
+
+# Strategy 2: Model routing by task complexity
+def route_to_model(task_type: str, complexity: str) -> str:
+    routing = {
+        ("classification", "simple"): "claude-haiku-4-5-20251001",    # $0.00025/1K in
+        ("extraction", "moderate"): "claude-sonnet-4-6",   # $0.003/1K in
+        ("reasoning", "complex"): "claude-opus-4-6",       # $0.015/1K in
+    }
+    return routing.get((task_type, complexity), "claude-sonnet-4-6")
+
+# Strategy 3: Batch API for async workloads (50% discount)
+# Use for: nightly report generation, embedding updates, bulk analysis
+batch = client.messages.batches.create(
+    requests=[
+        {"custom_id": f"req-{i}", "params": {
+            "model": "claude-haiku-4-5-20251001",
+            "max_tokens": 256,
+            "messages": [{"role": "user", "content": text}]
+        }}
+        for i, text in enumerate(large_dataset)
+    ]
+)
+# Results available within 24 hours, at 50% of regular price</code></pre>
+
+  <h2>6. The AI Engineer's 2026 Stack</h2>
+  <ul>
+    <li><strong>LLM Gateway:</strong> LiteLLM — provider abstraction, fallbacks, cost tracking</li>
+    <li><strong>Frameworks:</strong> LangChain + LangGraph — chains, agents, stateful workflows</li>
+    <li><strong>Vector DB:</strong> Pinecone (managed) or Weaviate (self-hosted)</li>
+    <li><strong>Embeddings:</strong> Voyage AI (quality) or BAAI/bge (free/local)</li>
+    <li><strong>Observability:</strong> Langfuse — tracing, evaluation, cost monitoring</li>
+    <li><strong>Evaluation:</strong> RAGAS (RAG quality) + Braintrust (A/B experiments)</li>
+    <li><strong>CI/CD:</strong> GitHub Actions with automated evals on every PR</li>
+    <li><strong>Serving:</strong> FastAPI + Celery + Redis for async agent execution</li>
+    <li><strong>Deployment:</strong> Docker + Kubernetes with HPA on GPU/CPU</li>
+    <li><strong>Secrets:</strong> AWS Secrets Manager or Vault — never hardcode API keys</li>
+  </ul>
+
+  <div class="callout">
+    <strong>The AI engineering mindset:</strong> LLMs are probabilistic components in deterministic systems. Every non-deterministic component needs: input validation, output validation, retry logic, fallbacks, observability, and regression testing. Build them like you'd build any distributed system — except the failure mode is "plausible wrong answer" rather than "error message."
+  </div>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>LiteLLM gives you provider-agnostic LLM access with automatic fallbacks and cost tracking</li>
+    <li>Langfuse traces every AI call — essential for debugging and quality monitoring</li>
+    <li>Run automated evaluations on every prompt/code change via CI/CD</li>
+    <li>Prompt caching (Anthropic) reduces repeated-system-prompt costs by 90%</li>
+    <li>Route tasks to cheaper models — use Haiku for classification, Opus for complex reasoning</li>
+    <li>Batch API offers 50% discount for async, non-time-critical workloads</li>
+    <li>The full AI engineering stack is distinct from ML engineering — it's systems engineering with probabilistic components</li>
+  </ul>
+
+  <div class="nav-links">
+    <a class="nav-link" href="../intermediate/model-context-protocol.html">← Model Context Protocol</a>
+    <a class="nav-link" href="../../index.html">← Back to All Articles</a>
+  </div>
+</div>
+<footer>The Agentic AI Academy · AI Engineering Tools · Advanced Level</footer>
+</body>
+</html>
