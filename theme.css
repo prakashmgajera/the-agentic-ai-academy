@@ -427,8 +427,105 @@ textarea::placeholder {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   CUSTOM SCROLLBARS, PROGRESS TRACKING & SEARCH
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+.search-container {
+  position: relative;
+  max-width: 400px;
+  width: 100%;
+}
+
+.search-input {
+  padding-left: 2.25rem !important;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-check-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--muted);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.card-check-btn:hover {
+  color: var(--primary);
+  background: var(--bg3);
+  transform: scale(1.1);
+}
+
+.card-check-btn.completed {
+  color: var(--primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVE
-═══════════════════════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
   nav {

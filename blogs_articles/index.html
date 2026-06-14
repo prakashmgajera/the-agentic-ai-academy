@@ -4,31 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog Articles — The Agentic AI Academy</title>
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+<!-- Unified theme stylesheet -->
+<link rel="stylesheet" href="../theme.css" />
+
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d2e;
-    --surface2: #141722;
-    --border: #2a2d3e;
-    --primary: #6366f1;
-    --primary-light: #818cf8;
-    --primary-dim: rgba(99,102,241,0.1);
-    --green: #22c55e;
-    --yellow: #eab308;
-    --red: #ef4444;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --code-bg: #0d1117;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
-  a { color: inherit; text-decoration: none; }
-
-  /* Header */
+  /* Page-specific styling */
   header {
-    background: linear-gradient(135deg, #1a1d2e 0%, #0f1117 60%, #130f1e 100%);
-    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg) 60%, var(--bg3) 100%);
+    border-bottom: 0.5px solid var(--border);
     padding: 3rem 2rem 4rem;
     text-align: center;
     position: relative;
@@ -42,30 +32,28 @@
     transform: translateX(-50%);
     width: 600px;
     height: 600px;
-    background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse, var(--primary-dim) 0%, transparent 70%);
     pointer-events: none;
   }
   .header-badge {
     display: inline-block;
     background: var(--primary-dim);
-    border: 1px solid rgba(99,102,241,0.3);
+    border: 1px solid var(--border-strong);
     border-radius: 9999px;
     padding: 0.3rem 1rem;
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--primary-light);
+    color: var(--primary);
     margin-bottom: 1rem;
   }
   header h1 {
+    font-family: var(--syne);
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 800;
     line-height: 1.1;
-    background: linear-gradient(135deg, #e2e8f0 30%, #818cf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--black);
     margin-bottom: 1rem;
   }
   header p {
@@ -81,13 +69,13 @@
     flex-wrap: wrap;
   }
   .stat { text-align: center; }
-  .stat-num { font-size: 1.75rem; font-weight: 700; color: var(--primary-light); }
+  .stat-num { font-family: var(--syne); font-size: 1.75rem; font-weight: 700; color: var(--primary); }
   .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
   /* Filters */
   .filter-bar {
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    border-bottom: 0.5px solid var(--border);
     padding: 1rem 2rem;
     display: flex;
     gap: 0.75rem;
@@ -101,24 +89,24 @@
   .filter-btn {
     padding: 0.35rem 0.875rem;
     border-radius: 9999px;
-    border: 1px solid var(--border);
+    border: 0.5px solid var(--border);
     background: transparent;
     color: var(--muted);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
     font-family: inherit;
   }
   .filter-btn:hover, .filter-btn.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--bg);
   }
-  .filter-sep { width: 1px; height: 1.5rem; background: var(--border); }
+  .filter-sep { width: 0.5px; height: 1.5rem; background: var(--border-strong); }
 
   /* Main content */
-  main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
   /* Section */
   .section { margin-bottom: 3.5rem; }
@@ -128,19 +116,19 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
   }
   .section-icon { font-size: 1.5rem; }
-  .section-title { font-size: 1.25rem; font-weight: 700; }
+  .section-title { font-family: var(--syne); font-size: 1.25rem; font-weight: 700; margin-bottom: 0; }
   .section-subtitle { font-size: 0.875rem; color: var(--muted); margin-top: 0.1rem; }
   .article-count {
     margin-left: auto;
     background: var(--primary-dim);
-    border: 1px solid rgba(99,102,241,0.2);
+    border: 0.5px solid var(--border);
     border-radius: 9999px;
     padding: 0.2rem 0.6rem;
     font-size: 0.75rem;
-    color: var(--primary-light);
+    color: var(--primary);
     font-weight: 600;
   }
 
@@ -153,20 +141,22 @@
 
   /* Article card */
   .article-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
     cursor: pointer;
   }
   .article-card:hover {
-    border-color: var(--primary);
+    border-color: var(--border-strong);
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.15);
+  }
+  .article-card.completed-card {
+    border-color: var(--primary);
   }
   .card-top { display: flex; align-items: center; justify-content: space-between; }
   .level-badge {
@@ -180,15 +170,16 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
-  .level-basic { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-  .level-intermediate { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
-  .level-advanced { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-  .read-time { font-size: 0.75rem; color: var(--muted); }
+  .level-basic { background: var(--green-bg); color: var(--green-text); border: 0.5px solid rgba(29,158,117,0.2); }
+  .level-intermediate { background: var(--amber-bg); color: var(--amber-text); border: 0.5px solid rgba(186,117,23,0.2); }
+  .level-advanced { background: var(--red-bg); color: var(--red-text); border: 0.5px solid rgba(216,90,48,0.2); }
+  .read-time { font-size: 0.75rem; color: var(--muted); margin-left: auto; margin-right: 8px; }
   .card-title {
+    font-family: var(--syne);
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.4;
-    color: var(--text);
+    color: var(--black);
   }
   .card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.5; }
   .card-footer {
@@ -197,29 +188,21 @@
     align-items: center;
     justify-content: space-between;
     padding-top: 0.75rem;
-    border-top: 1px solid var(--border);
+    border-top: 0.5px solid var(--border);
   }
   .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .tag {
-    background: rgba(99,102,241,0.08);
-    border: 1px solid rgba(99,102,241,0.15);
-    border-radius: 4px;
-    padding: 0.15rem 0.5rem;
-    font-size: 0.7rem;
-    color: var(--primary-light);
-  }
-  .card-arrow { color: var(--primary-light); font-size: 1rem; transition: transform 0.15s; }
+  .card-arrow { color: var(--primary); font-size: 1rem; transition: transform 0.15s; }
   .article-card:hover .card-arrow { transform: translateX(4px); }
 
   /* Learning path */
   .learning-path {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
     padding: 2rem;
     margin-bottom: 3rem;
   }
-  .learning-path h2 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .learning-path h2 { font-family: var(--syne); font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem; }
   .learning-path p { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; }
   .path-track {
     display: flex;
@@ -231,12 +214,12 @@
   .path-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; min-width: 90px; }
   .path-item {
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 0.5px solid var(--border);
     border-radius: 6px;
     padding: 0.3rem 0.6rem;
     font-size: 0.78rem;
-    color: var(--text);
-    transition: border-color 0.15s;
+    color: var(--black);
+    transition: border-color var(--transition-fast);
     white-space: nowrap;
   }
   .path-item:hover { border-color: var(--primary); }
@@ -245,15 +228,6 @@
   /* Hidden for filter */
   .article-card[data-hidden="true"] { display: none; }
   .section[data-hidden="true"] { display: none; }
-
-  footer {
-    border-top: 1px solid var(--border);
-    text-align: center;
-    padding: 2rem;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-  footer strong { color: var(--primary-light); }
 </style>
 </head>
 <body>
@@ -263,7 +237,7 @@
   <h1>The Agentic AI Academy<br>Blog & Article Hub</h1>
   <p>Comprehensive guides from beginner to advanced across AI foundations, RAG, agents, LangChain, vector databases, and production engineering.</p>
   <div class="stats">
-    <div class="stat"><div class="stat-num">20</div><div class="stat-label">Articles</div></div>
+    <div class="stat"><div class="stat-num">19</div><div class="stat-label">Articles</div></div>
     <div class="stat"><div class="stat-num">7</div><div class="stat-label">Domains</div></div>
     <div class="stat"><div class="stat-num">3</div><div class="stat-label">Levels</div></div>
     <div class="stat"><div class="stat-num">~3h</div><div class="stat-label">Total Reading</div></div>
@@ -285,9 +259,23 @@
   <button class="filter-btn" onclick="filterArticles('langchain')">LangChain</button>
   <button class="filter-btn" onclick="filterArticles('vectordb')">Vector DBs</button>
   <button class="filter-btn" onclick="filterArticles('tools')">AI Tools</button>
+
+  <div class="search-container" style="margin-left: auto;">
+    <i class="ti ti-search search-icon"></i>
+    <input type="text" id="article-search" class="search-input" placeholder="Search articles..." oninput="handleSearch()" />
+  </div>
 </div>
 
 <main>
+
+  <!-- Progress Tracker -->
+  <div class="progress-container" id="global-progress-container">
+    <div style="font-weight: 700; white-space: nowrap;">Learning Progress</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="global-progress-bar"></div>
+    </div>
+    <div class="progress-text" id="global-progress-text">0 / 19 completed</div>
+  </div>
 
   <!-- Suggested Learning Path -->
   <div class="learning-path">
@@ -692,43 +680,163 @@
 </main>
 
 <footer>
-  <strong>The Agentic AI Academy</strong> · 20 Articles · 7 Domains · Updated May 2026
+  <strong>The Agentic AI Academy</strong> · 19 Articles · 7 Domains · Updated May 2026
 </footer>
 
 <script>
-  function filterArticles(filter) {
-    // Update button states
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+  // ── SEARCH AND CATEGORY STATE ──
+  let currentFilter = 'all';
+  let searchQuery = '';
+  const STORAGE_KEY = 'completed-articles';
 
+  function filterArticles(filter) {
+    // Update button active state
+    document.querySelectorAll('.filter-bar .filter-btn').forEach(btn => btn.classList.remove('active'));
+    if (window.event && window.event.currentTarget) {
+      window.event.currentTarget.classList.add('active');
+    }
+    currentFilter = filter;
+    applyFilters();
+  }
+
+  function handleSearch() {
+    searchQuery = document.getElementById('article-search').value.toLowerCase().trim();
+    applyFilters();
+  }
+
+  function applyFilters() {
     const cards = document.querySelectorAll('.article-card');
     const sections = document.querySelectorAll('.section');
-
-    if (filter === 'all') {
-      cards.forEach(c => c.removeAttribute('data-hidden'));
-      sections.forEach(s => s.removeAttribute('data-hidden'));
-      return;
-    }
-
+    
     const levelFilters = ['basic', 'intermediate', 'advanced'];
     const domainFilters = ['foundations', 'prompting', 'rag', 'agents', 'langchain', 'vectordb', 'tools'];
 
     cards.forEach(card => {
-      let show = false;
-      if (levelFilters.includes(filter)) {
-        show = card.getAttribute('data-level') === filter;
-      } else if (domainFilters.includes(filter)) {
-        show = card.getAttribute('data-domain') === filter;
+      const level = card.getAttribute('data-level');
+      const domain = card.getAttribute('data-domain');
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+      const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+      const tags = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent.toLowerCase()).join(' ');
+
+      // Check category match
+      let categoryMatch = false;
+      if (currentFilter === 'all') {
+        categoryMatch = true;
+      } else if (levelFilters.includes(currentFilter)) {
+        categoryMatch = level === currentFilter;
+      } else if (domainFilters.includes(currentFilter)) {
+        categoryMatch = domain === currentFilter;
       }
+
+      // Check search match
+      let searchMatch = false;
+      if (!searchQuery) {
+        searchMatch = true;
+      } else {
+        searchMatch = title.includes(searchQuery) || desc.includes(searchQuery) || tags.includes(searchQuery);
+      }
+
+      const show = categoryMatch && searchMatch;
       card.setAttribute('data-hidden', show ? 'false' : 'true');
     });
 
-    // Hide sections with no visible cards
+    // Hide sections that have no visible articles
     sections.forEach(section => {
       const visibleCards = section.querySelectorAll('.article-card:not([data-hidden="true"])');
       section.setAttribute('data-hidden', visibleCards.length === 0 ? 'true' : 'false');
     });
   }
+
+  // ── LOCAL STORAGE PROGRESS TRACKING ──
+  function getCompletedArticles() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function toggleRead(href) {
+    let completed = getCompletedArticles();
+    const index = completed.indexOf(href);
+    if (index === -1) {
+      completed.push(href);
+    } else {
+      completed.splice(index, 1);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const completed = getCompletedArticles();
+    const cards = document.querySelectorAll('.article-card');
+    const total = cards.length;
+    let completedCount = 0;
+
+    cards.forEach(card => {
+      const href = card.getAttribute('href');
+      // Normalize href to resolve matching keys across subpages
+      const normalizedHref = href.replace(/^\.\.\/\.\.\//, '').replace(/^\.\.\//, '').replace(/^blogs_articles\//, '');
+      const checkBtn = card.querySelector('.card-check-btn');
+      
+      // Check if this article matches the completed list
+      const isCompleted = completed.some(item => {
+        const normalizedItem = item.replace(/^\.\.\/\.\.\//, '').replace(/^\.\.\//, '').replace(/^blogs_articles\//, '');
+        return normalizedItem === normalizedHref;
+      });
+
+      if (isCompleted) {
+        completedCount++;
+        if (checkBtn) {
+          checkBtn.classList.add('completed');
+          checkBtn.innerHTML = '<i class="ti ti-circle-check-filled"></i>';
+          checkBtn.title = 'Completed (click to mark unread)';
+        }
+        card.classList.add('completed-card');
+      } else {
+        if (checkBtn) {
+          checkBtn.classList.remove('completed');
+          checkBtn.innerHTML = '<i class="ti ti-circle"></i>';
+          checkBtn.title = 'Mark as completed';
+        }
+        card.classList.remove('completed-card');
+      }
+    });
+
+    const progressPercent = total > 0 ? (completedCount / total) * 100 : 0;
+    const bar = document.getElementById('global-progress-bar');
+    const text = document.getElementById('global-progress-text');
+    
+    if (bar) bar.style.width = `${progressPercent}%`;
+    if (text) text.textContent = `${completedCount} / ${total} completed (${Math.round(progressPercent)}%)`;
+  }
+
+  // ── DYNAMIC CARD ELEMENTS INJECTION ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.article-card');
+    cards.forEach(card => {
+      const cardTop = card.querySelector('.card-top');
+      const href = card.getAttribute('href');
+      
+      const checkBtn = document.createElement('button');
+      checkBtn.className = 'card-check-btn';
+      checkBtn.title = 'Mark as completed';
+      checkBtn.innerHTML = '<i class="ti ti-circle"></i>';
+      
+      checkBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleRead(href);
+      });
+      
+      if (cardTop) {
+        cardTop.appendChild(checkBtn);
+      }
+    });
+    
+    updateProgress();
+  });
 </script>
 
 </body>

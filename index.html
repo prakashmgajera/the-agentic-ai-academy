@@ -27,80 +27,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="theme.css" />
   <style>
-    :root {
-      --syne: 'Syne', sans-serif;
-      --dm: 'DM Sans', sans-serif;
-      --black: #111;
-      --muted: #666;
-      --bg: #fff;
-      --bg2: #f7f7f5;
-      --bg3: #f2f1ee;
-      --border: rgba(0,0,0,0.1);
-      --border-strong: rgba(0,0,0,0.2);
-      --radius-md: 8px;
-      --radius-lg: 12px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --black: #f0ede8;
-        --muted: #999;
-        --bg: #141413;
-        --bg2: #1c1c1a;
-        --bg3: #181817;
-        --border: rgba(255,255,255,0.1);
-        --border-strong: rgba(255,255,255,0.2);
-      }
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--dm);
-      color: var(--black);
-      background: var(--bg);
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
-    }
-
-    /* ── NAV ── */
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.25rem 2rem;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--bg);
-      position: sticky; top: 0; z-index: 100;
-    }
-    .nav-logo {
-      font-family: var(--syne); font-weight: 800; font-size: 16px;
-      letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;
-      color: var(--black); text-decoration: none;
-    }
-    .logo-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: #1D9E75; display: inline-block; flex-shrink: 0;
-    }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a {
-      font-size: 13px; font-weight: 400; color: var(--muted);
-      text-decoration: none; transition: color 0.15s;
-    }
-    .nav-links a:hover { color: var(--black); }
-    .nav-cta {
-      font-family: var(--syne); font-size: 13px; font-weight: 700;
-      padding: 8px 18px; border-radius: 6px;
-      background: var(--black); color: var(--bg) !important;
-      text-decoration: none;
-    }
-
     /* ── HERO ── */
     .hero {
       padding: 5rem 2rem 4rem;
@@ -486,13 +414,13 @@
   <nav>
     <a class="nav-logo" href="#"><span class="logo-dot"></span> The Agentic AI Academy</a>
     <div class="nav-links">
-      <a href="#curriculum">Curriculum</a>
+      <a href="curriculum/index.html">Curriculum</a>
       <a href="#projects">Projects</a>
       <a href="#community">Community</a>
       <a href="#toolkit">Toolkit</a>
       <a href="#chat">Chat</a>
-      <a href="#blog">Blog</a>
-      <a class="nav-cta" href="#start">Start Free →</a>
+      <a href="blogs_articles/index.html">Blog</a>
+      <a class="nav-cta" href="curriculum/index.html">Start Free →</a>
     </div>
   </nav>
 
@@ -504,7 +432,7 @@
         <h1 class="hero-h1">Learn to build<br><em>real AI agents</em><br>from scratch.</h1>
         <p class="hero-sub">The Agentic AI Academy is a structured path from zero to production-grade AI engineering — agents, RAG, LLMs, MCP, and everything in between. No paywalls. Ever.</p>
         <div class="hero-actions">
-          <a class="btn-primary" href="#start">Start Learning →</a>
+          <a class="btn-primary" href="curriculum/index.html">Start Interactive Path →</a>
           <a class="btn-ghost" href="https://github.com/prakashmgajera/the-agentic-ai-academy" target="_blank" rel="noopener">
             <i class="ti ti-brand-github" aria-hidden="true"></i> View on GitHub
           </a>
@@ -610,6 +538,9 @@
           <div class="phase-cap"><i class="ti ti-trophy" aria-hidden="true" style="font-size:14px"></i>Capstone: Production open-source AI system</div>
         </div>
 
+      </div>
+      <div style="text-align: center; margin-top: 3rem;">
+        <a class="btn-primary" href="curriculum/index.html">Enter Interactive Classroom →</a>
       </div>
     </div>
   </div>
@@ -842,7 +773,7 @@
       </div>
       <div style="text-align:center;margin-top:1.5rem">
         <a href="blogs_articles/index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.25rem;border:1px solid var(--border-strong);border-radius:8px;font-size:0.875rem;color:var(--muted);text-decoration:none;transition:border-color 0.2s,color 0.2s" onmouseover="this.style.borderColor='#6366f1';this.style.color='#e2e8f0'" onmouseout="this.style.borderColor='var(--border-strong)';this.style.color='var(--muted)'">
-          View all 20 articles &nbsp;→
+          View all 19 articles &nbsp;→
         </a>
       </div>
     </div>
